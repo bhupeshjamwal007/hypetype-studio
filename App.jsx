@@ -18,11 +18,16 @@ import WebAppsDevelopment from './Services/Web&Apps_Development';
 import Header from './components/header';
 import Footer from './components/footer';
 
+/** Home is the peel-stack at /HypeType-page (and legacy aliases). No global site footer there — the page embeds its own footer on the last stack slide. */
+function isHomeRoute(pathname) {
+    const p = pathname.replace(/\/+$/, '') || '/';
+    const lower = p.toLowerCase();
+    return p === '/' || lower === '/hypetype-page' || lower === '/hypetype';
+}
+
 function AppShell() {
     const location = useLocation();
-    /*const showGlobalFooter = location.pathname !== '/';*/
-    const hideFooterPaths = ['/', '/HypeType-page', '/HypeType'];
-    const showGlobalFooter = !hideFooterPaths.includes(location.pathname);
+    const showGlobalFooter = !isHomeRoute(location.pathname);
 
     return (
         <div className="app-container">
