@@ -20,7 +20,9 @@ import Footer from './components/footer';
 
 function AppShell() {
     const location = useLocation();
-    const showGlobalFooter = location.pathname !== '/';
+    /*const showGlobalFooter = location.pathname !== '/';*/
+    const hideFooterPaths = ['/', '/HypeType-page',];
+    const showGlobalFooter = !hideFooterPaths.includes(location.pathname);
 
     return (
         <div className="app-container">
