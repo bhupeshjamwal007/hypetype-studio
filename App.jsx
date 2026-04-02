@@ -27,7 +27,7 @@ function AppShell() {
             <Header />
             <main className="app-main">
                 <Routes>
-                    <Route path="/" element={<Navigate to="/HypeType-page" replace />} />
+                    <Route path="/HypeType" element={<Navigate to="/HypeType-page" replace />} />
                     <Route path="/HypeType-page" element={<Home />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/about-us" element={<AboutUs />} />
