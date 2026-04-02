@@ -1,18 +1,78 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Footer from './components/footer';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 const LAST_STACK_INDEX = 4;
-const PAGE_ANIMATION_MS = 520;
 const WHEEL_THRESHOLD = 6;
 const TOUCH_THRESHOLD = 10;
-const TRANSITION_COOLDOWN_MS = 700;
+
+/** Tunes peel timing, optional continuous hero-thumb animation, and lazy video for Safari / low-end mobile. */
+function computeHomePerf() {
+    if (typeof window === 'undefined') {
+        return {
+            reducedMotion: false,
+            lowEndMobile: false,
+            lite: false,
+            pageAnimationMs: 520,
+            transitionCooldownMs: 700,
+            skipThumbLoop: false,
+        };
+    }
+
+    let reducedMotion = false;
+    try {
+        reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch {
+        /* Safari private mode / older browsers */
+    }
+
+    let coarse = false;
+    let narrow = false;
+    try {
+        coarse = window.matchMedia('(pointer: coarse)').matches;
+        narrow = window.matchMedia('(max-width: 768px)').matches;
+    } catch {
+        /* ignore */
+    }
+
+    const cores = typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : 8;
+    const memory = navigator.deviceMemory;
+    const conn = navigator.connection;
+    const saveData = conn?.saveData === true;
+    const slowNet = conn != null && /^(slow-2g|2g)$/i.test(conn.effectiveType || '');
+
+    const lowEndMobile =
+        saveData ||
+        slowNet ||
+        (coarse && narrow && (cores <= 4 || (typeof memory === 'number' && memory <= 4)));
+
+    const lite = reducedMotion || lowEndMobile;
+    const pageAnimationMs = reducedMotion ? 0 : lowEndMobile ? 360 : 520;
+    const transitionCooldownMs = reducedMotion ? 120 : lowEndMobile ? 560 : 700;
+
+    return {
+        reducedMotion,
+        lowEndMobile,
+        lite,
+        pageAnimationMs,
+        transitionCooldownMs,
+        skipThumbLoop: reducedMotion || lowEndMobile,
+    };
+}
 
 const Home = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const perf = useMemo(() => computeHomePerf(), []);
+    const pageAnimationMs = perf.pageAnimationMs;
+    const transitionCooldownMs = perf.transitionCooldownMs;
+
     const [sliderThankYou, setSliderThankYou] = useState(false);
+    const [loadVideoIframe, setLoadVideoIframe] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        return /^#(video-page|services-page|about-page|footer-page)/.test(window.location.hash);
+    });
     const pageRefs = useRef([]);
     const servicesScrollRef = useRef(null);
     const footerScrollRef = useRef(null);
@@ -142,7 +202,7 @@ const Home = () => {
             lastTimestamp = 0;
             direction = 1;
             window.setTimeout(() => {
-                startAutoMotion();
+                if (!perf.skipThumbLoop) startAutoMotion();
             }, 360);
         };
 
@@ -163,7 +223,9 @@ const Home = () => {
         window.addEventListener('touchend', onEnd);
         window.addEventListener('resize', onResize);
 
-        startAutoMotion();
+        if (!perf.skipThumbLoop) {
+            startAutoMotion();
+        }
 
         return () => {
             if (navigateTimerId != null) {
@@ -178,7 +240,7 @@ const Home = () => {
             window.removeEventListener('touchend', onEnd);
             window.removeEventListener('resize', onResize);
         };
-    }, [navigate]);
+    }, [navigate, perf.skipThumbLoop]);
 
     useEffect(() => {
         const applyPeelEffect = (progressValue) => {
@@ -223,12 +285,21 @@ const Home = () => {
                 progressRef.current = target;
                 applyPeelEffect(target);
                 animatingRef.current = false;
+                if (target >= 1) setLoadVideoIframe(true);
+                return;
+            }
+
+            if (pageAnimationMs <= 0) {
+                progressRef.current = target;
+                applyPeelEffect(target);
+                animatingRef.current = false;
+                if (target >= 1) setLoadVideoIframe(true);
                 return;
             }
 
             const step = (now) => {
                 const elapsed = now - start;
-                const t = clamp(elapsed / PAGE_ANIMATION_MS, 0, 1);
+                const t = clamp(elapsed / pageAnimationMs, 0, 1);
                 const eased = 1 - Math.pow(1 - t, 3);
                 const next = initial + delta * eased;
 
@@ -244,6 +315,7 @@ const Home = () => {
                 applyPeelEffect(target);
                 snapFrameRef.current = null;
                 animatingRef.current = false;
+                if (target >= 1) setLoadVideoIframe(true);
             };
 
             snapFrameRef.current = window.requestAnimationFrame(step);
@@ -307,7 +379,9 @@ const Home = () => {
             return scroller.scrollTop > 1;
         };
 
-        const isTransitionCoolingDown = () => Date.now() - lastTransitionAtRef.current < TRANSITION_COOLDOWN_MS;
+        const isTransitionCoolingDown = () => Date.now() - lastTransitionAtRef.current < transitionCooldownMs;
+
+        const touchSlop = perf.lowEndMobile ? 14 : TOUCH_THRESHOLD;
 
         const onWheel = (event) => {
             if (!shouldHandleStackScroll()) return;
@@ -346,7 +420,7 @@ const Home = () => {
 
             event.preventDefault();
             if (animatingRef.current || isTransitionCoolingDown()) return;
-            if (Math.abs(deltaY) < TOUCH_THRESHOLD) return;
+            if (Math.abs(deltaY) < touchSlop) return;
 
             touchStartYRef.current = touchY;
             if (deltaY > 0) {
@@ -375,7 +449,7 @@ const Home = () => {
             cancelAnimation();
             wheelDeltaAccumulatorRef.current = 0;
         };
-    }, []);
+    }, [pageAnimationMs, transitionCooldownMs, perf.lowEndMobile]);
 
     useEffect(() => {
         const mq = window.matchMedia('(max-width: 768px)');
@@ -407,8 +481,13 @@ const Home = () => {
         const section = footerSectionRef.current;
         const vv = window.visualViewport;
 
+        let vvRaf = null;
         const onVvChange = () => {
-            requestAnimationFrame(measureFooterScrollRegion);
+            if (vvRaf != null) return;
+            vvRaf = requestAnimationFrame(() => {
+                vvRaf = null;
+                measureFooterScrollRegion();
+            });
         };
 
         window.addEventListener('resize', onVvChange);
@@ -425,6 +504,7 @@ const Home = () => {
         }
 
         return () => {
+            if (vvRaf != null) cancelAnimationFrame(vvRaf);
             cancelAnimationFrame(rafId);
             window.removeEventListener('resize', onVvChange);
             window.removeEventListener('orientationchange', onVvChange);
@@ -447,6 +527,8 @@ const Home = () => {
 
         const targetIndex = hashToIndex[location.hash];
         if (targetIndex == null) return;
+
+        if (targetIndex >= 1) setLoadVideoIframe(true);
 
         pageIndexRef.current = targetIndex;
         progressRef.current = targetIndex;
@@ -516,7 +598,7 @@ const Home = () => {
         : undefined;
 
     return (
-        <div className="home-layout">
+        <div className={`home-layout${perf.lite ? ' home-layout--lite' : ''}`}>
             <div className="peel-scroll-region">
                 <div className="peel-stage">
                     <section className="peel-page hero-page" id="home-page" ref={registerPage(0)}>
@@ -552,13 +634,21 @@ const Home = () => {
                     <section className="peel-page video-page" id="video-page" ref={registerPage(1)}>
                         <div className="content video-fullscreen-layout">
                             <div className="video-container video-fullscreen-frame">
-                                <iframe
-                                    title="HypeType Video"
-                                    src="https://www.youtube.com/embed/23g5HBOg3Ic"
-                                    allow="autoplay; encrypted-media"
-                                    frameBorder="0"
-                                    allowFullScreen
-                                />
+                                {loadVideoIframe ? (
+                                    <iframe
+                                        title="HypeType Video"
+                                        src="https://www.youtube.com/embed/23g5HBOg3Ic"
+                                        allow="autoplay; encrypted-media; fullscreen"
+                                        loading="lazy"
+                                        referrerPolicy="strict-origin-when-cross-origin"
+                                        frameBorder="0"
+                                        allowFullScreen
+                                    />
+                                ) : (
+                                    <div className="video-embed-placeholder" aria-hidden="true">
+                                        <span className="video-embed-placeholder-label">Video loads when you open this slide</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </section>
@@ -601,7 +691,7 @@ const Home = () => {
                         </div>
                     </section>
 
-                    /*<section className="peel-page about-stack-page" id="footer-page" ref={setFooterPageRef(4)}>
+                    <section className="peel-page about-stack-page" id="footer-page" ref={setFooterPageRef(4)}>
                         <div
                             className="content about-content about-stack-content services-content"
                             ref={footerScrollRef}
@@ -609,7 +699,7 @@ const Home = () => {
                         >
                             <Footer style={{ marginTop: isNarrowStack ? 30 : 0, overflow: 'visible' }} />
                         </div>
-                    </section>*/
+                    </section>
                 </div>
             </div>
         </div>

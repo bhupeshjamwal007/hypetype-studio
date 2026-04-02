@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, useMatch, Navigate } from 'react-router-dom';
 import './App.css';
 import AboutUs from './About_Us';
 import ContactUs from './Contact_Us';
@@ -18,15 +18,32 @@ import WebAppsDevelopment from './Services/Web&Apps_Development';
 import Header from './components/header';
 import Footer from './components/footer';
 
+/** Home is the peel-stack at /HypeType-page (and legacy aliases). No global site footer there — the page embeds its own footer on the last stack slide. */
+function isHomePath(pathname) {
+    const trimmed = (pathname || '/').replace(/\/+$/, '') || '/';
+    const lower = trimmed.toLowerCase();
+    if (lower === '/' || lower === '/hypetype-page' || lower === '/hypetype') return true;
+    const parts = lower.split('/').filter(Boolean);
+    const last = parts[parts.length - 1] ?? '';
+    return last === 'hypetype-page' || last === 'hypetype';
+}
+
 function AppShell() {
     const location = useLocation();
-    const showGlobalFooter = location.pathname !== '/';
+    const matchRoot = useMatch({ path: '/', end: true });
+    const matchHome = useMatch({ path: '/HypeType-page', end: true });
+    const matchLegacyHome = useMatch({ path: '/HypeType', end: true });
+    const hideGlobalFooter =
+        Boolean(matchRoot || matchHome || matchLegacyHome) || isHomePath(location.pathname);
+    const showGlobalFooter = !hideGlobalFooter;
 
     return (
         <div className="app-container">
             <Header />
             <main className="app-main">
                 <Routes>
+                    <Route path="/" element={<Navigate to="/HypeType-page" replace />} />
+                    <Route path="/HypeType" element={<Navigate to="/HypeType-page" replace />} />
                     <Route path="/HypeType-page" element={<Home />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/about-us" element={<AboutUs />} />
