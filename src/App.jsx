@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import AboutUs from './About_Us';
 import ContactUs from './Contact_Us';
-import Home from './Home';
+import Home from './HypeType';
 import Services from './Services';
 import Branding from './Services/Branding';
 import ArtistManagement from './Services/Artist_management';
@@ -22,67 +22,12 @@ function AppShell() {
     const location = useLocation();
     const showGlobalFooter = location.pathname !== '/';
 
-    useEffect(() => {
-        const thumb = document.getElementById('thumb');
-        const container = document.getElementById('sliderContainer');
-        let isDragging = false;
-
-        if (thumb && container) {
-            const startDrag = () => {
-                isDragging = true;
-                thumb.style.transition = 'none';
-            };
-
-            thumb.onmousedown = startDrag;
-            thumb.ontouchstart = startDrag;
-
-            const onMove = (e) => {
-                if (!isDragging) return;
-
-                const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-                const rect = container.getBoundingClientRect();
-
-                let x = clientX - rect.left - 30;
-                const maxX = rect.width - thumb.offsetWidth - 6;
-
-                if (x < 6) x = 6;
-                if (x > maxX) {
-                    x = maxX;
-                    isDragging = false;
-                    window.location.href = '/contact';
-                }
-
-                thumb.style.left = `${x}px`;
-            };
-
-            const onEnd = () => {
-                if (!isDragging) return;
-
-                isDragging = false;
-                thumb.style.transition = 'left 0.3s ease-out';
-                thumb.style.left = '6px';
-            };
-
-            window.addEventListener('mousemove', onMove);
-            window.addEventListener('touchmove', onMove, { passive: false });
-            window.addEventListener('mouseup', onEnd);
-            window.addEventListener('touchend', onEnd);
-
-            return () => {
-                window.removeEventListener('mousemove', onMove);
-                window.removeEventListener('touchmove', onMove);
-                window.removeEventListener('mouseup', onEnd);
-                window.removeEventListener('touchend', onEnd);
-            };
-        }
-    }, []);
-
     return (
         <div className="app-container">
             <Header />
             <main className="app-main">
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/HypeType-page" element={<Home />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/about-us" element={<AboutUs />} />
                     <Route path="/About_Us" element={<AboutUs />} />

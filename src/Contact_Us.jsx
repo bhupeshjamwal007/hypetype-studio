@@ -1,9 +1,23 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xpqodqra';
+const REDIRECT_DELAY_MS = 2600;
+
 const ContactUs = () => {
+    const navigate = useNavigate();
     const [phone, setPhone] = useState('');
     const [isInvalid, setIsInvalid] = useState(false);
+    const [submitPhase, setSubmitPhase] = useState('idle');
+    const [submitError, setSubmitError] = useState('');
+    const redirectTimerRef = useRef(null);
+
+    useEffect(() => () => {
+        if (redirectTimerRef.current) {
+            window.clearTimeout(redirectTimerRef.current);
+        }
+    }, []);
 
     const phoneError = useMemo(() => {
         if (!isInvalid) return '';
@@ -20,15 +34,66 @@ const ContactUs = () => {
         }
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setSubmitError('');
+
         if (phone.length !== 10) {
-            event.preventDefault();
             setIsInvalid(true);
+            return;
+        }
+
+        setSubmitPhase('submitting');
+
+        const form = event.currentTarget;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(FORMSPREE_ENDPOINT, {
+                method: 'POST',
+                body: formData,
+                headers: { Accept: 'application/json' },
+            });
+
+            let data = null;
+            try {
+                data = await response.json();
+            } catch {
+                data = null;
+            }
+
+            if (response.ok) {
+                setSubmitPhase('success');
+                if (redirectTimerRef.current) {
+                    window.clearTimeout(redirectTimerRef.current);
+                }
+                redirectTimerRef.current = window.setTimeout(() => {
+                    redirectTimerRef.current = null;
+                    navigate('/#home-page');
+                }, REDIRECT_DELAY_MS);
+                return;
+            }
+
+            setSubmitPhase('idle');
+            const errMsg = data?.error || data?.errors?.[0]?.message || 'Something went wrong. Please try again.';
+            setSubmitError(typeof errMsg === 'string' ? errMsg : 'Please try again later.');
+        } catch {
+            setSubmitPhase('idle');
+            setSubmitError('Network error. Please check your connection and try again.');
         }
     };
 
     return (
         <div className="contact-page">
+            {submitPhase === 'success' ? (
+                <div className="contact-thankyou-backdrop" role="status" aria-live="polite">
+                    <div className="contact-thankyou-card">
+                        <span className="contact-thankyou-tick" aria-hidden="true">✓</span>
+                        <p className="contact-thankyou-title">Thank You For Contacting Us</p>
+                        <p className="contact-thankyou-sub">Taking you home…</p>
+                    </div>
+                </div>
+            ) : null}
             <main className="contact-main">
                 <div className="contact-container">
                     <div className="contact-header-block">
@@ -36,12 +101,7 @@ const ContactUs = () => {
                         <p>Let&apos;s build something amazing together</p>
                     </div>
 
-                    <form
-                        action="https://formspree.io/f/xpqodqra"
-                        method="POST"
-                        className="contact-form"
-                        onSubmit={handleSubmit}
-                    >
+                    <form className="contact-form" onSubmit={handleSubmit} noValidate>
                         <div className="form-group">
                             <label htmlFor="full_name">Name <span>*</span></label>
                             <input id="full_name" type="text" name="full_name" placeholder="Enter name" required />
@@ -81,7 +141,11 @@ const ContactUs = () => {
                             <textarea id="requirement" name="requirement" rows="4" placeholder="Tell us about your project..." required />
                         </div>
 
-                        <button type="submit" className="submit-btn">Request Callback</button>
+                        {submitError ? <p className="contact-form-error">{submitError}</p> : null}
+
+                        <button type="submit" className="submit-btn" disabled={submitPhase === 'submitting'}>
+                            {submitPhase === 'submitting' ? 'Sending…' : 'Request Callback'}
+                        </button>
                     </form>
                 </div>
             </main>

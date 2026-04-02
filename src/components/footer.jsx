@@ -1,14 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Footer = () => {
+const Footer = ({ style: footerStyle }) => {
     return (
-        <footer className="site-footer" id="contact-section">
+        <footer className="site-footer" id="contact-section" style={footerStyle}>
             <div className="site-footer-inner">
                 <div className="about-inline-footer">
                     <div className="about-inline-footer-top">
                         <div className="footer-brand-block">
-                            <h3 className="footer-logo">HYPETYPE</h3>
+                            <Link to="/HypeType-page" className="footer-logo" aria-label="HYPETYPE – Home">
+                                HYPETYPE
+                            </Link>
                         </div>
 
                         <div className="footer-services-column">
@@ -53,7 +55,12 @@ const Footer = () => {
                                 </div>
                             </div>
                             <a href="/" className="footer-address-line">Navigate →</a>
-                            <p className="footer-address-line">✉ hypetypecreators@gmail.com</p>
+                            <a
+                                href="mailto:hypetypecreators@gmail.com"
+                                className="footer-address-line"
+                            >
+                                ✉ hypetypecreators@gmail.com
+                            </a>
                             <p className="footer-address-line">📞 96221-97382</p>
                         </div>
                     </div>
