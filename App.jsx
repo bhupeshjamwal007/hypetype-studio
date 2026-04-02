@@ -1,36 +1,26 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import './App.css';
-import AboutUs from './About_Us';
-import ContactUs from './Contact_Us';
-import Home from './HypeType';
-import Services from './Services';
-import Branding from './Services/Branding';
-import ArtistManagement from './Services/Artist_management';
-import BrochureMenu from './Services/Brochure_Menu';
-import CommercialAds from './Services/Commercial&Ads';
-import EventManagement from './Services/Event_Management';
-import Logo from './Services/Logo_Designing';
-import Packaging from './Services/Packaging';
-import PerformanceMarketing from './Services/Performance_Marketing';
-import SocialMedia from './Services/Social_Media';
-import WebAppsDevelopment from './Services/Web&Apps_Development';
-import Header from './components/header';
-import Footer from './components/footer';
-
 function AppShell() {
     const location = useLocation();
-    /*const showGlobalFooter = location.pathname !== '/';*/
-    const hideFooterPaths = ['/', '/HypeType-page',];
-    const showGlobalFooter = !hideFooterPaths.includes(location.pathname);
+    
+    // 1. Create the helper variable (convert to lowercase to be safe)
+    const currentPath = location.pathname.toLowerCase();
+
+    // 2. Define which paths should NOT have a global footer
+    const hideFooterPaths = ['/', '/hypetype', '/hypetype-page'];
+
+    // 3. Check if the current path is in that hidden list
+    const showGlobalFooter = !hideFooterPaths.includes(currentPath);
 
     return (
         <div className="app-container">
             <Header />
             <main className="app-main">
                 <Routes>
+                    {/* Redirect BOTH the empty domain and /HypeType to your main page */}
+                    <Route path="/" element={<Navigate to="/HypeType-page" replace />} />
                     <Route path="/HypeType" element={<Navigate to="/HypeType-page" replace />} />
+                    
                     <Route path="/HypeType-page" element={<Home />} />
+                    
                     <Route path="/services" element={<Services />} />
                     <Route path="/about-us" element={<AboutUs />} />
                     <Route path="/About_Us" element={<AboutUs />} />
@@ -53,19 +43,12 @@ function AppShell() {
                     <Route path="/Services/Artist_Management" element={<ArtistManagement />} />
                     <Route path="/services/event-management" element={<EventManagement />} />
                     <Route path="/Services/Event_Management" element={<EventManagement />} />
+
+                    {/* Catch-all for typos */}
+                    <Route path="*" element={<Navigate to="/HypeType-page" replace />} />
                 </Routes>
             </main>
-            {showGlobalFooter ? <Footer /> : null}
+            {showGlobalFooter && <Footer />}
         </div>
     );
 }
-
-function App() {
-    return (
-        <Router>
-            <AppShell />
-        </Router>
-    );
-}
-
-export default App;
