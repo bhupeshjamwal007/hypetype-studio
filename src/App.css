@@ -516,6 +516,20 @@
             font-style: italic;
         }
 
+    .home-layout .brand-title {
+        font-size: clamp(2.65rem, 6.1vw, 5.45rem);
+    }
+
+    .home-layout .eyebrow {
+        font-size: 0.72rem;
+        letter-spacing: 0.14rem;
+    }
+
+    .home-layout .about-badge {
+        font-size: 0.62rem;
+        letter-spacing: 0.11rem;
+    }
+
     .sub-description {
         font-size: 1.05rem;
         line-height: 1.8;
@@ -979,6 +993,10 @@
             font-size: clamp(2.6rem, 12vw, 4.6rem);
         }
 
+        .home-layout .brand-title {
+            font-size: clamp(2.28rem, 10.5vw, 4.05rem);
+        }
+
         .peel-page:not(.video-page) {
             padding-top: 112px;
             padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
@@ -1252,6 +1270,10 @@
             line-height: 1.02;
         }
 
+        .home-layout .brand-title {
+            font-size: clamp(2.05rem, 9.2vw, 3.55rem);
+        }
+
         .sub-description {
             font-size: 0.98rem;
             line-height: 1.7;
@@ -1272,6 +1294,10 @@
         .services-page .brand-title {
             font-size: clamp(2.2rem, 10vw, 3.2rem);
             margin-bottom: 14px;
+        }
+
+        .home-layout .services-page .brand-title {
+            font-size: clamp(1.92rem, 8.8vw, 2.75rem);
         }
 
         .services-page .sub-description {
@@ -1335,6 +1361,108 @@
         .about-stack-content .site-footer {
             margin-top: 18px;
             border-radius: 18px;
+        }
+    }
+
+    @media (max-height: 799px) {
+        .home-layout .brand-title,
+        .home-layout .services-page .brand-title {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .home-layout .peel-page:not(.video-page) {
+            padding-top: 84px;
+            padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+        }
+
+        .home-layout .about-stack-page {
+            padding-top: 92px;
+            padding-bottom: 14px;
+        }
+
+        .home-layout .eyebrow,
+        .home-layout .about-badge {
+            margin-bottom: 8px;
+            padding: 5px 10px;
+        }
+
+        .home-layout .meta-description {
+            margin-bottom: 4px;
+        }
+
+        .home-layout .strategy-tag {
+            margin-bottom: 4px;
+        }
+
+        .home-layout .sub-description {
+            line-height: 1.55;
+        }
+
+        .home-layout .services-page .sub-description {
+            margin-bottom: 0;
+        }
+
+        .home-layout .slide-to-unlock {
+            margin-top: 16px;
+            height: 56px;
+        }
+
+        .home-layout .slide-to-unlock .thumb {
+            width: 48px;
+            height: 48px;
+        }
+
+        .home-layout .slide-to-unlock .text,
+        .home-layout .slide-thankyou {
+            font-size: 0.92rem;
+        }
+
+        .home-layout .pyramid-grid {
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .home-layout .card-row {
+            gap: 8px;
+        }
+
+        .home-layout .service-card {
+            padding: 12px 10px;
+            border-radius: 16px;
+        }
+
+        .home-layout .service-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 8px;
+            border-radius: 14px;
+            font-size: 1.35rem;
+        }
+
+        .home-layout .card-title {
+            margin-bottom: 4px;
+            font-size: 1.02rem;
+        }
+
+        .home-layout .learn-more-btn {
+            font-size: 0.8rem;
+        }
+
+        .home-layout .about-stack-content {
+            gap: 6px;
+        }
+
+        .home-layout .vision-text {
+            margin-bottom: 10px;
+        }
+
+        .home-layout .footer-cta-wrapper {
+            margin-top: 4px;
+        }
+
+        .home-layout .about-stack-content .site-footer {
+            margin-top: 8px;
         }
     }
 
