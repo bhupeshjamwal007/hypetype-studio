@@ -1,26 +1,32 @@
 function AppShell() {
     const location = useLocation();
     
-    // 1. Create the helper variable (convert to lowercase to be safe)
+    // 1. Force everything to lowercase so it matches exactly
     const currentPath = location.pathname.toLowerCase();
 
-    // 2. Define which paths should NOT have a global footer
-    const hideFooterPaths = ['/', '/hypetype', '/hypetype-page'];
+    // 2. Define the exact paths where the footer MUST be hidden
+    // We include the empty string, the slash, and the full page name
+    const hiddenPaths = ['', '/', '/hypetype', '/hypetype-page', '/hypetype-page/'];
 
-    // 3. Check if the current path is in that hidden list
-    const showGlobalFooter = !hideFooterPaths.includes(currentPath);
+    // 3. Check if currentPath is in our hidden list
+    const isHome = hiddenPaths.includes(currentPath);
+    
+    // Debugging: This will show in your browser console (F12) 
+    // to tell us why it's showing or hiding.
+    console.log("Current Path:", currentPath, "Hide Footer?", isHome);
 
     return (
         <div className="app-container">
             <Header />
             <main className="app-main">
                 <Routes>
-                    {/* Redirect BOTH the empty domain and /HypeType to your main page */}
+                    {/* Handle the root and redirect to our main page */}
                     <Route path="/" element={<Navigate to="/HypeType-page" replace />} />
                     <Route path="/HypeType" element={<Navigate to="/HypeType-page" replace />} />
                     
                     <Route path="/HypeType-page" element={<Home />} />
                     
+                    {/* All other routes */}
                     <Route path="/services" element={<Services />} />
                     <Route path="/about-us" element={<AboutUs />} />
                     <Route path="/About_Us" element={<AboutUs />} />
@@ -44,11 +50,13 @@ function AppShell() {
                     <Route path="/services/event-management" element={<EventManagement />} />
                     <Route path="/Services/Event_Management" element={<EventManagement />} />
 
-                    {/* Catch-all for typos */}
+                    {/* Catch-all */}
                     <Route path="*" element={<Navigate to="/HypeType-page" replace />} />
                 </Routes>
             </main>
-            {showGlobalFooter && <Footer />}
+
+            {/* ONLY show footer if NOT on home */}
+            {!isHome && <Footer />}
         </div>
     );
 }
