@@ -601,7 +601,7 @@ const Home = () => {
                         </div>
                     </section>
 
-                    <section className="peel-page about-stack-page" id="footer-page" ref={setFooterPageRef(4)}>
+                    /*<section className="peel-page about-stack-page" id="footer-page" ref={setFooterPageRef(4)}>
                         <div
                             className="content about-content about-stack-content services-content"
                             ref={footerScrollRef}
@@ -609,7 +609,7 @@ const Home = () => {
                         >
                             <Footer style={{ marginTop: isNarrowStack ? 30 : 0, overflow: 'visible' }} />
                         </div>
-                    </section>
+                    </section>*/
                 </div>
             </div>
         </div>
