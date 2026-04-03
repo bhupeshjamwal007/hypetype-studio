@@ -69,7 +69,7 @@ const Footer = ({ style: footerStyle, isHome = false }) => {
                         <>
                             <div className="home-footer-logo-row">
                                 <div className="footer-brand-block">
-                                    <Link to="/HypeType-page" className="footer-logo" aria-label="HYPETYPE – Home">
+                                    <Link to="/" className="footer-logo" aria-label="HYPETYPE – Home">
                                         HYPETYPE
                                     </Link>
                                 </div>
@@ -84,7 +84,7 @@ const Footer = ({ style: footerStyle, isHome = false }) => {
                     ) : (
                         <div className="about-inline-footer-top">
                             <div className="footer-brand-block">
-                                <Link to="/HypeType-page" className="footer-logo" aria-label="HYPETYPE – Home">
+                                <Link to="/" className="footer-logo" aria-label="HYPETYPE – Home">
                                     HYPETYPE
                                 </Link>
                             </div>

@@ -108,7 +108,7 @@ const Header = () => {
     return (
         <header className="site-header">
             <div className="site-header-inner">
-                <Link to="/HypeType-page" className="logo" aria-label="HYPETYPE home">
+                <Link to="/" className="logo" aria-label="HYPETYPE home">
                     <span className="logo-wordmark">
                         hypetype
                         <span className="logo-dot" aria-hidden="true" />
@@ -133,7 +133,7 @@ const Header = () => {
                     </button>
 
                     <nav className="site-nav" aria-label="Primary navigation">
-                        <a href="/HypeType-page">Home</a>
+                        <a href="/">Home</a>
                         <div
                             className={`site-nav-dropdown${servicesOpen ? ' is-open' : ''}`}
                             ref={dropdownRef}
