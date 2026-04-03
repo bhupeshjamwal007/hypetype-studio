@@ -80,6 +80,17 @@
         pointer-events: auto;
     }
 
+    /* Add more outer spacing for header/footer boxes on non-mobile screens */
+    @media (min-width: 641px) {
+        .site-header-inner {
+            width: calc(100% - 56px);
+            margin-top: 8px;
+            border-radius: 12px;
+            border-inline: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    }
+
     .logo {
         display: inline-flex;
         align-items: center;
@@ -427,6 +438,11 @@
         box-sizing: border-box;
     }
 
+    /* Home: use more of the available desktop width (Mac/laptop) */
+    .home-layout .content {
+        width: min(1400px, 100%);
+    }
+
     .welcome-text {
         display: flex;
         flex-direction: column;
@@ -473,6 +489,11 @@
         min-width: 0;
         margin: 0 auto;
         box-sizing: border-box;
+    }
+
+    /* Home: wider services layout on desktop */
+    .home-layout .services-content {
+        max-width: 1400px;
     }
 
     .eyebrow,
@@ -695,6 +716,11 @@
         box-sizing: border-box;
     }
 
+    /* Home: wider grid on Mac/laptops */
+    .home-layout .pyramid-grid {
+        width: min(1280px, 100%);
+    }
+
     .card-row {
         display: flex;
         justify-content: center;
@@ -791,6 +817,34 @@
         box-sizing: border-box;
     }
 
+    /* Home peel stack: only the ABOUT slide should be vertically centered. */
+    .home-layout #about-page .about-stack-content {
+        justify-content: center;
+        min-height: 0;
+    }
+
+    /* Footer slide should be top-aligned so logo + links don't get pushed out of view on small screens. */
+    .home-layout #footer-page .about-stack-content {
+        justify-content: flex-start;
+        min-height: 0;
+        padding-top: 18px;
+    }
+
+    .home-layout #footer-page .about-inline-footer {
+        margin-top: 0 !important;
+    }
+
+    /* About + footer slides: reduce extra vertical padding on desktop so it uses space better */
+    .home-layout .about-stack-page {
+        padding-top: clamp(110px, 10vh, 152px);
+        padding-bottom: clamp(18px, 3.5vh, 36px);
+    }
+
+    /* In the home footer slide, remove extra top margin so it can use the space better. */
+    .home-layout #footer-page .about-stack-content .site-footer {
+        margin-top: 0 !important;
+    }
+
     .about-main {
         display: flex;
         flex-direction: column;
@@ -803,6 +857,416 @@
         border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
+    /* Home-only footer layout: logo -> divider -> 3 columns */
+    .site-footer--home .about-inline-footer {
+        border-top: 0;
+        padding-top: 0;
+    }
+
+    .home-footer-logo-row {
+        padding-top: 4px;
+        padding-bottom: 12px;
+        text-align: center;
+    }
+
+    .home-footer-divider {
+        height: 1px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.08);
+        margin-bottom: 18px;
+    }
+
+    .site-footer--home .home-footer-columns {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: clamp(24px, 3vw, 46px);
+        align-items: start;
+    }
+
+    .site-footer--home .footer-brand-block {
+        flex: none;
+        max-width: none;
+    }
+
+    .site-footer--home .footer-logo {
+        margin-inline: auto;
+        font-size: 1.7rem;
+        letter-spacing: 0.24rem;
+    }
+
+    .site-footer--home .footer-meta {
+        gap: 6px;
+    }
+
+    .site-footer--home .about-inline-footer-bottom {
+        margin-top: 8px;
+    }
+
+    /* Non-mobile: keep home footer container centered and compact */
+    @media (min-width: 641px) {
+        .home-layout #footer-page .site-footer {
+            width: min(1500px, calc(100% - 56px));
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+    /* 1440/laptop: make home footer slightly bigger */
+    @media (min-width: 1280px) {
+        .site-footer--home .site-footer-inner {
+            padding-top: 56px;
+            padding-bottom: 38px;
+        }
+
+        .site-footer--home .home-footer-columns {
+            grid-template-columns: minmax(220px, 1fr) minmax(260px, 1fr) minmax(320px, 1fr);
+            column-gap: clamp(86px, 8vw, 180px);
+            row-gap: 18px;
+        }
+
+        .site-footer--home .footer-logo {
+            font-size: 2.05rem;
+            letter-spacing: 0.24rem;
+            color: #f4c898;
+        }
+
+        .site-footer--home .footer-column-title {
+            font-size: 1.24rem;
+            margin-bottom: 12px;
+        }
+
+        .site-footer--home .footer-service-links a,
+        .site-footer--home .footer-address-line {
+            font-size: 1.2rem;
+            line-height: 1.58;
+        }
+
+        .site-footer--home .footer-address-country {
+            font-size: 1.28rem;
+        }
+
+        .site-footer--home .footer-service-links {
+            gap: 12px;
+        }
+
+        .site-footer--home .footer-address-list {
+            gap: 16px;
+        }
+
+        /* Push "Our Office" block further to the right */
+        .site-footer--home .home-footer-columns .footer-meta {
+            justify-self: end;
+            width: min(360px, 100%);
+            text-align: left;
+        }
+
+        .site-footer--home .home-footer-columns .footer-address-item {
+            justify-content: flex-start;
+        }
+    }
+
+    /* 1440 desktop only: make Home page-3 typography/cards larger. */
+    @media (min-width: 1400px) and (max-width: 1499px) {
+        .home-layout .services-page .brand-title {
+            font-size: clamp(3.1rem, 4vw, 4.35rem);
+            margin-bottom: 18px;
+        }
+
+        .home-layout .services-page .sub-description {
+            font-size: 1.06rem;
+            line-height: 1.72;
+            max-width: 980px;
+        }
+
+        .home-layout .services-page .pyramid-grid {
+            width: min(1360px, 100%);
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .home-layout .services-page .card-row {
+            gap: 24px;
+        }
+
+        .home-layout .services-page .service-card {
+            max-width: 276px;
+            padding: 28px 22px;
+            border-radius: 26px;
+        }
+
+        .home-layout .services-page .service-icon {
+            width: 78px;
+            height: 78px;
+            border-radius: 24px;
+            font-size: 2.1rem;
+            margin-bottom: 20px;
+        }
+
+        .home-layout .services-page .card-title {
+            font-size: 1.28rem;
+            margin-bottom: 13px;
+        }
+
+        .home-layout .services-page .learn-more-btn {
+            font-size: 0.98rem;
+        }
+    }
+
+    /* Ultra-wide desktop (2560px): upscale content while keeping full-screen fit/readability. */
+    @media (min-width: 2400px) {
+        .home-layout .content,
+        .home-layout .services-content {
+            width: min(2100px, 100%);
+        }
+
+        .home-layout .peel-page:not(.video-page) {
+            padding-top: 156px;
+            padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+            padding-left: max(56px, env(safe-area-inset-left, 0px));
+            padding-right: max(56px, env(safe-area-inset-right, 0px));
+        }
+
+        .home-layout .eyebrow {
+            font-size: 0.92rem;
+            letter-spacing: 0.18rem;
+        }
+
+        .home-layout .brand-title {
+            font-size: clamp(4.4rem, 5.1vw, 6.2rem);
+            line-height: 1;
+            margin-bottom: 26px;
+        }
+
+        .home-layout .sub-description {
+            max-width: 1100px;
+            font-size: 1.26rem;
+            line-height: 1.82;
+        }
+
+        .home-layout .slide-to-unlock {
+            width: min(520px, 100%);
+            height: 92px;
+            margin-top: 54px;
+        }
+
+        .home-layout .slide-to-unlock .thumb {
+            width: 74px;
+            height: 74px;
+        }
+
+        .home-layout .slide-to-unlock .text {
+            font-size: 1.16rem;
+            letter-spacing: 0.06rem;
+        }
+
+        .home-layout .services-page .brand-title {
+            font-size: clamp(4rem, 4.6vw, 5.2rem);
+            margin-bottom: 20px;
+        }
+
+        .home-layout .services-page .sub-description {
+            font-size: 1.18rem;
+            line-height: 1.8;
+            max-width: 1200px;
+        }
+
+        .home-layout .pyramid-grid {
+            width: min(1900px, 100%);
+            gap: 30px;
+            margin-top: 42px;
+        }
+
+        .home-layout .card-row {
+            gap: 30px;
+        }
+
+        .home-layout .service-card {
+            max-width: 340px;
+            padding: 34px 28px;
+            border-radius: 30px;
+        }
+
+        .home-layout .service-icon {
+            width: 92px;
+            height: 92px;
+            border-radius: 28px;
+            font-size: 2.45rem;
+            margin-bottom: 22px;
+        }
+
+        .home-layout .card-title {
+            font-size: 1.48rem;
+            margin-bottom: 14px;
+        }
+
+        .home-layout .learn-more-btn {
+            font-size: 1.08rem;
+        }
+
+        .home-layout #footer-page .site-footer {
+            width: min(2100px, calc(100% - 84px));
+        }
+
+        .site-footer--home .site-footer-inner {
+            padding-top: 68px;
+            padding-bottom: 46px;
+        }
+
+        .site-footer--home .footer-logo {
+            font-size: 2.35rem;
+            letter-spacing: 0.28rem;
+        }
+
+        .site-footer--home .footer-column-title {
+            font-size: 1.34rem;
+            margin-bottom: 14px;
+        }
+
+        .site-footer--home .footer-service-links a,
+        .site-footer--home .footer-address-line {
+            font-size: 1.24rem;
+            line-height: 1.62;
+        }
+
+        .site-footer--home .footer-address-country {
+            font-size: 1.32rem;
+        }
+
+        /* Global page shells/sections */
+        .branding-shell,
+        .about-container-center,
+        .about-container-narrow,
+        .services-overview-shell {
+            width: min(1900px, 100%);
+        }
+
+        .branding-section,
+        .about-who-we-are-section,
+        .about-advantage-section,
+        .about-final-cta,
+        .services-overview-highlight,
+        .services-overview-cta {
+            padding-top: 108px;
+            padding-bottom: 108px;
+        }
+
+        /* Shared typography scale */
+        .branding-hero-title,
+        .about-main-heading,
+        .services-overview-title {
+            font-size: clamp(3.8rem, 4.2vw, 5.8rem);
+            line-height: 1.04;
+        }
+
+        .branding-hero-description,
+        .branding-section-copy,
+        .social-platforms-subtitle,
+        .social-discover-subtitle,
+        .about-hero-subtext,
+        .about-lead-text,
+        .about-body-text,
+        .about-advantage-subheading,
+        .about-cta-subtext,
+        .services-overview-subtitle {
+            font-size: 1.3rem;
+            line-height: 1.85;
+            max-width: 1200px;
+        }
+
+        /* Branding + service detail cards */
+        .branding-services-grid,
+        .social-services-grid,
+        .social-platforms-grid,
+        .social-discover-grid,
+        .services-overview-grid {
+            gap: 34px;
+        }
+
+        .branding-service-card,
+        .social-platform-card,
+        .social-discover-card,
+        .services-overview-card {
+            padding: 38px 34px;
+            border-radius: 28px;
+        }
+
+        .branding-service-card h3,
+        .social-discover-card h3,
+        .services-overview-card h2 {
+            font-size: 1.55rem;
+        }
+
+        .branding-service-card p,
+        .social-discover-card p,
+        .services-overview-card p {
+            font-size: 1.16rem;
+            line-height: 1.78;
+        }
+
+        /* About cards/process */
+        .about-advantage-grid {
+            gap: 26px;
+        }
+
+        .about-advantage-card {
+            padding: 34px 26px;
+            border-radius: 28px;
+        }
+
+        .about-advantage-card h3 {
+            font-size: 1.2rem;
+        }
+
+        .social-process-card {
+            grid-template-columns: 130px 1fr;
+            gap: 36px;
+            padding: 40px 44px;
+            border-radius: 30px;
+        }
+
+        .social-process-step {
+            font-size: clamp(3rem, 3.5vw, 4.6rem);
+        }
+
+        .social-process-copy h3 {
+            font-size: clamp(1.8rem, 2.2vw, 2.5rem);
+        }
+
+        .social-process-copy p {
+            font-size: 1.22rem;
+            line-height: 1.82;
+        }
+
+        /* Contact page */
+        .contact-main {
+            padding-top: 170px;
+            padding-bottom: 120px;
+        }
+
+        .contact-container {
+            width: min(980px, 100%);
+            padding: 56px 52px;
+            border-radius: 34px;
+        }
+
+        .contact-header-block h1 {
+            font-size: clamp(3rem, 3.8vw, 4.8rem);
+        }
+
+        .contact-header-block p,
+        .form-group label,
+        .phone-error-message,
+        .contact-form-error {
+            font-size: 1.08rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .submit-btn {
+            font-size: 1.06rem;
+        }
+    }
+
     .about-inline-footer-top {
         display: flex;
         justify-content: space-between;
@@ -811,8 +1275,92 @@
         text-align: left;
     }
 
+    /* Desktop: balanced column spacing for the footer */
+    @media (min-width: 901px) {
+        .about-inline-footer-top {
+            display: grid;
+            grid-template-columns: minmax(220px, 1.2fr) minmax(190px, 1fr) minmax(190px, 1fr) minmax(240px, 0.95fr);
+            column-gap: clamp(28px, 3vw, 56px);
+        }
+    }
+
+    /* Equalize footer columns so they look balanced on wide screens */
+    .footer-brand-block,
+    .footer-services-column,
+    .footer-meta {
+        flex: 1 1 0;
+    }
+
+    .footer-brand-block {
+        max-width: none;
+    }
+
     .footer-services-column {
         min-width: 220px;
+    }
+
+    /* Tablet (and small laptop): allow home services/footer slides to scroll so content never gets cut off */
+    @media (max-width: 1024px) {
+        .home-layout .peel-page.services-page,
+        .home-layout #footer-page.peel-page {
+            align-items: stretch;
+            justify-content: flex-start;
+        }
+
+        .home-layout .peel-page.services-page .services-content,
+        .home-layout #footer-page .services-content {
+            height: 100%;
+            overflow-y: auto;
+            justify-content: flex-start;
+            scrollbar-width: none;
+        }
+
+        /* Keep home footer from clipping on tablets: tighten padding + gaps */
+        .home-layout #footer-page .site-footer-inner {
+            padding: 28px max(14px, env(safe-area-inset-right, 0px)) 20px max(14px, env(safe-area-inset-left, 0px));
+            gap: 18px;
+        }
+
+        .home-layout #footer-page .home-footer-columns {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            column-gap: clamp(24px, 3.4vw, 44px);
+            row-gap: 14px;
+            align-items: start;
+        }
+
+        .home-layout #footer-page .footer-column-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .home-layout #footer-page .footer-service-links a,
+        .home-layout #footer-page .footer-address-line {
+            font-size: 1rem;
+            line-height: 1.52;
+        }
+
+        .home-layout #footer-page .footer-address-country {
+            font-size: 1.06rem;
+        }
+
+        .home-layout #footer-page .home-footer-columns .footer-meta {
+            justify-self: stretch;
+            width: 100%;
+            text-align: left;
+        }
+
+        .home-layout #footer-page .home-footer-columns .footer-address-item {
+            justify-content: flex-start;
+        }
+
+        .home-layout #footer-page .footer-bottom {
+            padding: 14px 16px 18px;
+        }
+
+        .home-layout .peel-page.services-page .services-content::-webkit-scrollbar,
+        .home-layout #footer-page .services-content::-webkit-scrollbar {
+            display: none;
+        }
     }
 
     .footer-column-title {
@@ -874,7 +1422,7 @@
     }
 
     .site-footer-inner {
-        width: min(1240px, 100%);
+        width: min(1600px, 100%);
         max-width: 100%;
         min-width: 0;
         box-sizing: border-box;
@@ -1114,6 +1662,35 @@
             flex-direction: column;
         }
 
+        .site-footer--home .home-footer-columns {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        /* Beat `.home-layout #footer-page .home-footer-columns` from the 1024px block (higher specificity). */
+        .home-layout #footer-page .home-footer-columns {
+            grid-template-columns: 1fr;
+            column-gap: 18px;
+            row-gap: 18px;
+            align-items: start;
+            justify-items: stretch;
+        }
+
+        /* Footer headers: keep the three sections stacked cleanly */
+        .footer-services-column,
+        .footer-meta {
+            width: 100%;
+        }
+
+        .footer-column-title {
+            margin-bottom: 8px;
+        }
+
+        .site-footer-inner {
+            padding-top: 30px;
+            padding-bottom: 22px;
+        }
+
         .footer-bottom {
             flex-direction: column;
             align-items: flex-start;
@@ -1121,6 +1698,71 @@
 
         .about-stack-content .site-footer {
             border-radius: 22px;
+        }
+    }
+
+    /* Tablet nav should behave like mobile menu */
+    @media (max-width: 768px) {
+        .site-header-inner {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .site-nav-group {
+            position: relative;
+            width: auto;
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-menu-toggle {
+            display: inline-flex;
+        }
+
+        .site-nav {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: max(0px, env(safe-area-inset-right, 0px));
+            width: min(300px, calc(100vw - 28px));
+            padding: 14px;
+            box-sizing: border-box;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(18, 16, 15, 0.98);
+            box-shadow: 0 22px 44px rgba(0, 0, 0, 0.28);
+            display: none;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            z-index: 80;
+        }
+
+        .site-nav-group.is-open .site-nav {
+            display: flex;
+        }
+
+        .site-nav a,
+        .site-nav-dropdown-link,
+        .site-nav-dropdown-trigger,
+        .site-nav-submenu-trigger {
+            width: 100%;
+            text-align: left;
+        }
+
+        .header-cta {
+            display: none;
+        }
+
+        /* Keep homepage footer logo clear of fixed header on tablets. */
+        .home-layout #footer-page .footer-logo {
+            margin-top: 18px;
+        }
+
+        .home-layout #footer-page .home-footer-logo-row {
+            padding-top: 14px;
         }
     }
 
@@ -1245,6 +1887,19 @@
             padding-bottom: 22px;
         }
 
+        .site-footer--home .home-footer-logo-row {
+            padding-top: 12px;
+        }
+
+        /* Mobile: footer logo sits too high under the fixed header */
+        .home-layout #footer-page .footer-logo {
+            margin-top: 14px;
+        }
+
+        .home-layout #footer-page .site-footer-inner {
+            padding-top: 30px;
+        }
+
         .slide-to-unlock {
             width: 100%;
             max-width: 340px;
@@ -1263,7 +1918,7 @@
         .welcome-text,
         .section-copy,
         .about-content {
-            text-align: left;
+            text-align: center;
         }
 
         .brand-title {
@@ -1364,6 +2019,106 @@
         }
     }
 
+    /* Extra small mobile (<=425px): home footer becomes one column + centered */
+    @media (max-width: 425px) {
+        /* On small phones, keep page 1 and page 4 content centered on screen. */
+        .home-layout #home-page.peel-page,
+        .home-layout #about-page.peel-page {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-layout #home-page .welcome-text,
+        .home-layout #about-page .about-content,
+        .home-layout #about-page .about-main {
+            text-align: center;
+            align-items: center;
+            margin-inline: auto;
+        }
+
+        .home-layout #footer-page .site-footer-inner {
+            padding-left: max(12px, env(safe-area-inset-left, 0px));
+            padding-right: max(12px, env(safe-area-inset-right, 0px));
+        }
+
+        .site-footer--home .home-footer-columns,
+        .home-layout #footer-page .home-footer-columns {
+            grid-template-columns: 1fr;
+            justify-items: stretch;
+            text-align: left;
+            gap: 16px;
+            column-gap: 16px;
+            row-gap: 16px;
+            align-items: start;
+        }
+
+        .site-footer--home .home-footer-logo-row {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .site-footer--home .home-footer-columns .footer-meta {
+            justify-self: stretch;
+            text-align: left;
+        }
+
+        .site-footer--home .footer-column-title {
+            text-align: left;
+        }
+
+        .site-footer--home .footer-service-links {
+            justify-items: start;
+            text-align: left;
+        }
+
+        .site-footer--home .footer-service-links a {
+            display: block;
+            width: 100%;
+            text-align: left;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .site-footer--home .footer-address-list {
+            justify-items: start;
+            text-align: left;
+        }
+
+        .site-footer--home .footer-address-item {
+            justify-content: flex-start;
+        }
+
+        .site-footer--home .footer-address-line,
+        .site-footer--home .footer-address-country {
+            text-align: left;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .site-footer--home .footer-bottom.about-inline-footer-bottom {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            padding: 14px 12px 18px;
+        }
+
+        .site-footer--home .footer-bottom.about-inline-footer-bottom p {
+            max-width: 100%;
+            margin: 0;
+            line-height: 1.55;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .site-footer--home .footer-social-icons {
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+    }
+
     @media (max-height: 799px) {
         .home-layout .brand-title,
         .home-layout .services-page .brand-title {
@@ -1372,13 +2127,14 @@
         }
 
         .home-layout .peel-page:not(.video-page) {
-            padding-top: 84px;
+            /* Keep enough space for the fixed header on tablets/phones. */
+            padding-top: 112px;
             padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
         }
 
         .home-layout .about-stack-page {
-            padding-top: 92px;
-            padding-bottom: 14px;
+            padding-top: 138px;
+            padding-bottom: 20px;
         }
 
         .home-layout .eyebrow,
@@ -2531,33 +3287,45 @@
         }
     }
 
-    @media (max-width: 1024px) {
-        .branding-services-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .social-services-grid,
-        .social-platforms-grid,
-        .social-discover-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .social-discover-row {
-            grid-template-columns: 1fr;
-        }
-
-        .social-discover-nav {
-            display: none;
-        }
-
-        .about-advantage-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .services-overview-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
+@media (max-width: 1024px) {
+    .branding-services-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .social-services-grid,
+    .social-platforms-grid,
+    .social-discover-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .social-discover-row {
+        grid-template-columns: 1fr;
+    }
+
+    .social-discover-nav {
+        display: none;
+    }
+
+    .about-advantage-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .services-overview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about-inline-footer-top { /* Replace with your actual class name */
+        gap: 10px; /* Reduce from 40px or whatever it currently is */
+        padding-inline: 10px;
+    }
+
+    .site-footer-inner {
+        margin-top: 0px; /* Adjust as needed */
+    } 
+}
+
+    
+
 
     @media (max-width: 768px) {
         .branding-hero {

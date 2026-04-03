@@ -115,7 +115,7 @@ const Header = () => {
                     </span>
                 </Link>
 
-                <div className={`site-nav-group${mobileMenuOpen ? ' is-open' : ''}`} ref={mobileMenuRef}>
+                        <div className={`site-nav-group${mobileMenuOpen ? ' is-open' : ''}`} ref={mobileMenuRef}>
                     <button
                         type="button"
                         className="mobile-menu-toggle"
@@ -201,7 +201,7 @@ const Header = () => {
                                 <Link to="/services/event-management" onClick={closeServicesMenu}>Event Management</Link>
                             </div>
                         </div>
-                        <Link to="/about-us">About</Link>
+                        <Link to="/About_Us" onClick={closeServicesMenu}>About</Link>
                         <Link to="/contact-us">Contact</Link>
                     </nav>
 

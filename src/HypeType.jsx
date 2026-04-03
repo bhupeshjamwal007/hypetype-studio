@@ -346,7 +346,7 @@ const Home = () => {
         };
 
         const shouldAllowServicesInnerScroll = (direction) => {
-            if (window.innerWidth > 768) return false;
+            if (window.innerWidth > 1024) return false;
             if (pageIndexRef.current !== 2) return false;
 
             const scroller = servicesScrollRef.current;
@@ -363,7 +363,7 @@ const Home = () => {
         };
 
         const shouldAllowFooterInnerScroll = (direction) => {
-            if (window.innerWidth > 768) return false;
+            if (window.innerWidth > 1024) return false;
             if (pageIndexRef.current !== 4) return false;
 
             const scroller = footerScrollRef.current;
@@ -685,7 +685,7 @@ const Home = () => {
                                     Our vision is to become a full-spectrum creative and growth partner for brands that want direction, clarity, and measurable momentum.
                                 </p>
                                 <div className="footer-cta-wrapper">
-                                    <Link to="/contact-us" className="main-cta">Start Your Project</Link>
+                                    <Link to="/About_Us" className="main-cta">Start Your Project</Link>
                                 </div>
                             </div>
                         </div>
@@ -697,7 +697,7 @@ const Home = () => {
                             ref={footerScrollRef}
                             style={footerStackStyle}
                         >
-                            <Footer style={{ marginTop: isNarrowStack ? 30 : 0, overflow: 'visible' }} />
+                            <Footer isHome style={{ marginTop: isNarrowStack ? 30 : 0, overflow: 'visible' }} />
                         </div>
                     </section>
                 </div>

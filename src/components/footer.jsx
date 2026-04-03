@@ -1,69 +1,99 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Footer = ({ style: footerStyle }) => {
+const Footer = ({ style: footerStyle, isHome = false }) => {
+    const footerRootClass = `site-footer${isHome ? ' site-footer--home' : ''}`;
+
+    const quickLinksBlock = (
+        <div className="footer-services-column">
+            <h4 className="footer-column-title">Quick Links</h4>
+            <div className="footer-service-links">
+                <Link to="/about-us">About us</Link>
+                <Link to="/">Our work</Link>
+                <Link to="/services">Services</Link>
+                <Link to="/">Our team</Link>
+                <Link to="/">News</Link>
+                <Link to="/">Careers</Link>
+            </div>
+        </div>
+    );
+
+    const serviceLinksBlock = (
+        <div className="footer-services-column">
+            <h4 className="footer-column-title">{isHome ? 'Services' : 'Featured Work'}</h4>
+            <div className="footer-service-links">
+                <Link to="/services/branding">Branding</Link>
+                <Link to="/services/performance-marketing">Performance Marketing</Link>
+                <Link to="/services/social-media">Social Media</Link>
+                <Link to="/services/commercial-and-ads">Commercial And Ads</Link>
+                <Link to="/services/web-apps-development">Web And Apps</Link>
+                <Link to="/services/artist-management">Artist Management</Link>
+                <Link to="/services/event-management">Event Management</Link>
+            </div>
+        </div>
+    );
+
+    const officeBlock = (
+        <div className="footer-meta">
+            <h4 className="footer-column-title">Our Office</h4>
+            <div className="footer-address-list">
+                <div className="footer-address-item">
+                    <img src="https://flagcdn.com/w40/in.png" alt="India flag" className="footer-flag" />
+                    <div>
+                        <p className="footer-address-country">Jammu, India</p>
+                    </div>
+                </div>
+                <div className="footer-address-item">
+                    <img src="https://flagcdn.com/w40/ca.png" alt="Canada flag" className="footer-flag" />
+                    <div>
+                        <p className="footer-address-country">Alberta, Canada</p>
+                    </div>
+                </div>
+            </div>
+            <a href="/" className="footer-address-line">Navigate →</a>
+            <a
+                href="mailto:hypetypecreators@gmail.com"
+                className="footer-address-line"
+            >
+                ✉ hypetypecreators@gmail.com
+            </a>
+            <p className="footer-address-line">📞 96221-97382</p>
+        </div>
+    );
+
     return (
-        <footer className="site-footer" id="contact-section" style={footerStyle}>
+        <footer className={footerRootClass} id="contact-section" style={footerStyle}>
             <div className="site-footer-inner">
                 <div className="about-inline-footer">
-                    <div className="about-inline-footer-top">
-                        <div className="footer-brand-block">
-                            <Link to="/HypeType-page" className="footer-logo" aria-label="HYPETYPE – Home">
-                                HYPETYPE
-                            </Link>
-                        </div>
-
-                        <div className="footer-services-column">
-                            <h4 className="footer-column-title">Quick Links</h4>
-                            <div className="footer-service-links">
-                                <Link to="/about-us">About us</Link>
-                                <Link to="/">Our work</Link>
-                                <Link to="/services">Services</Link>
-                                <Link to="/">Our team</Link>
-                                <Link to="/">News</Link>
-                                <Link to="/">Careers</Link>
-                            </div>
-                        </div>
-
-                        <div className="footer-services-column">
-                            <h4 className="footer-column-title">Featured Work</h4>
-                            <div className="footer-service-links">
-                                <Link to="/services/branding">Branding</Link>
-                                <Link to="/services/performance-marketing">Performance Marketing</Link>
-                                <Link to="/services/social-media">Social Media</Link>
-                                <Link to="/services/commercial-and-ads">Commercial And Ads</Link>
-                                <Link to="/services/web-apps-development">Web And Apps</Link>
-                                <Link to="/services/artist-management">Artist Management</Link>
-                                <Link to="/services/event-management">Event Management</Link>
-                            </div>
-                        </div>
-
-                        <div className="footer-meta">
-                            <h4 className="footer-column-title">Our Office</h4>
-                            <div className="footer-address-list">
-                                <div className="footer-address-item">
-                                    <img src="https://flagcdn.com/w40/in.png" alt="India flag" className="footer-flag" />
-                                    <div>
-                                        <p className="footer-address-country">Jammu, India</p>
-                                    </div>
-                                </div>
-                                <div className="footer-address-item">
-                                    <img src="https://flagcdn.com/w40/ca.png" alt="Canada flag" className="footer-flag" />
-                                    <div>
-                                        <p className="footer-address-country">Alberta, Canada</p>
-                                    </div>
+                    {isHome ? (
+                        <>
+                            <div className="home-footer-logo-row">
+                                <div className="footer-brand-block">
+                                    <Link to="/HypeType-page" className="footer-logo" aria-label="HYPETYPE – Home">
+                                        HYPETYPE
+                                    </Link>
                                 </div>
                             </div>
-                            <a href="/" className="footer-address-line">Navigate →</a>
-                            <a
-                                href="mailto:hypetypecreators@gmail.com"
-                                className="footer-address-line"
-                            >
-                                ✉ hypetypecreators@gmail.com
-                            </a>
-                            <p className="footer-address-line">📞 96221-97382</p>
+                            <div className="home-footer-divider" aria-hidden="true" />
+                            <div className="about-inline-footer-top home-footer-columns">
+                                {quickLinksBlock}
+                                {serviceLinksBlock}
+                                {officeBlock}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="about-inline-footer-top">
+                            <div className="footer-brand-block">
+                                <Link to="/HypeType-page" className="footer-logo" aria-label="HYPETYPE – Home">
+                                    HYPETYPE
+                                </Link>
+                            </div>
+
+                            {quickLinksBlock}
+                            {serviceLinksBlock}
+                            {officeBlock}
                         </div>
-                    </div>
+                    )}
 
                     <div className="footer-bottom about-inline-footer-bottom">
                         <p>All Rights Reserved - Terms & Conditions - Privacy Policy</p>
