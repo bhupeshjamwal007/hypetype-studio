@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logoImage from '../assets/image/logo2.png';
 
 const Footer = ({ style: footerStyle, isHome = false }) => {
     const footerRootClass = `site-footer${isHome ? ' site-footer--home' : ''}`;
@@ -9,11 +10,11 @@ const Footer = ({ style: footerStyle, isHome = false }) => {
             <h4 className="footer-column-title">Quick Links</h4>
             <div className="footer-service-links">
                 <Link to="/about-us">About us</Link>
-                <Link to="/">Our work</Link>
+                {/*<Link to="/">Our work</Link>*/}
                 <Link to="/services">Services</Link>
-                <Link to="/">Our team</Link>
+                {/*<Link to="/">Our team</Link>
                 <Link to="/">News</Link>
-                <Link to="/">Careers</Link>
+                <Link to="/">Careers</Link>*/}
             </div>
         </div>
     );
@@ -55,7 +56,7 @@ const Footer = ({ style: footerStyle, isHome = false }) => {
                 href="mailto:hypetypecreators@gmail.com"
                 className="footer-address-line"
             >
-                ✉ hypetypecreators@gmail.com
+                ✉ info@thehypetype.com
             </a>
             <p className="footer-address-line">📞 96221-97382</p>
         </div>
@@ -70,7 +71,7 @@ const Footer = ({ style: footerStyle, isHome = false }) => {
                             <div className="home-footer-logo-row">
                                 <div className="footer-brand-block">
                                     <Link to="/" className="footer-logo" aria-label="HYPETYPE – Home">
-                                        HYPETYPE
+                                        <img src={logoImage} alt="HYPETYPE" className="footer-logo-image" />
                                     </Link>
                                 </div>
                             </div>
@@ -85,7 +86,7 @@ const Footer = ({ style: footerStyle, isHome = false }) => {
                         <div className="about-inline-footer-top">
                             <div className="footer-brand-block">
                                 <Link to="/" className="footer-logo" aria-label="HYPETYPE – Home">
-                                    HYPETYPE
+                                    <img src={logoImage} alt="HYPETYPE" className="footer-logo-image" />
                                 </Link>
                             </div>
 
@@ -115,3 +116,4 @@ const Footer = ({ style: footerStyle, isHome = false }) => {
 };
 
 export default Footer;
+

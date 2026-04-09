@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import logoImage from '../assets/image/logo2.png';
 
 const MENU_LEAVE_DELAY_MS = 180;
 
@@ -109,10 +110,7 @@ const Header = () => {
         <header className="site-header">
             <div className="site-header-inner">
                 <Link to="/" className="logo" aria-label="HYPETYPE home">
-                    <span className="logo-wordmark">
-                        hypetype
-                        <span className="logo-dot" aria-hidden="true" />
-                    </span>
+                    <img src={logoImage} alt="HYPETYPE" className="logo-image" />
                 </Link>
 
                         <div className={`site-nav-group${mobileMenuOpen ? ' is-open' : ''}`} ref={mobileMenuRef}>

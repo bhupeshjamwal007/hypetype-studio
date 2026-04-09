@@ -48,7 +48,7 @@ function computeHomePerf() {
         (coarse && narrow && (cores <= 4 || (typeof memory === 'number' && memory <= 4)));
 
     const lite = reducedMotion || lowEndMobile;
-    const pageAnimationMs = reducedMotion ? 0 : lowEndMobile ? 360 : 520;
+    const pageAnimationMs = reducedMotion ? 0 : lowEndMobile ? 600 : 1200;
     const transitionCooldownMs = reducedMotion ? 120 : lowEndMobile ? 560 : 700;
 
     return {
@@ -603,7 +603,7 @@ const Home = () => {
                 <div className="peel-stage">
                     <section className="peel-page hero-page" id="home-page" ref={registerPage(0)}>
                         <div className="content welcome-text">
-                            <span className="eyebrow">HYPETYPE Studio</span>
+                            <span className="eyebrow">HYPETYPE - Brand Growth Studio</span>
                             <h1 className="brand-title">Visibility without direction is noise.</h1>
                             <div className="hero-description-container">
                                 <p className="meta-description">
