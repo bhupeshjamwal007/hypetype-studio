@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import logoImage from '../assets/image/logo2.png';
 
 const MENU_LEAVE_DELAY_MS = 180;
 
@@ -108,14 +109,11 @@ const Header = () => {
     return (
         <header className="site-header">
             <div className="site-header-inner">
-                <Link to="/HypeType-page" className="logo" aria-label="HYPETYPE home">
-                    <span className="logo-wordmark">
-                        hypetype
-                        <span className="logo-dot" aria-hidden="true" />
-                    </span>
+                <Link to="/" className="logo" aria-label="HYPETYPE home">
+                    <img src={logoImage} alt="HYPETYPE" className="logo-image" />
                 </Link>
 
-                <div className={`site-nav-group${mobileMenuOpen ? ' is-open' : ''}`} ref={mobileMenuRef}>
+                        <div className={`site-nav-group${mobileMenuOpen ? ' is-open' : ''}`} ref={mobileMenuRef}>
                     <button
                         type="button"
                         className="mobile-menu-toggle"
@@ -133,7 +131,7 @@ const Header = () => {
                     </button>
 
                     <nav className="site-nav" aria-label="Primary navigation">
-                        <a href="/HypeType-page">Home</a>
+                        <a href="/">Home</a>
                         <div
                             className={`site-nav-dropdown${servicesOpen ? ' is-open' : ''}`}
                             ref={dropdownRef}
@@ -201,7 +199,7 @@ const Header = () => {
                                 <Link to="/services/event-management" onClick={closeServicesMenu}>Event Management</Link>
                             </div>
                         </div>
-                        <Link to="/about-us">About</Link>
+                        <Link to="/About_Us" onClick={closeServicesMenu}>About</Link>
                         <Link to="/contact-us">Contact</Link>
                     </nav>
 
