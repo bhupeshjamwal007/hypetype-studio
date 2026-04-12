@@ -380,10 +380,23 @@ const Home = () => {
         };
 
         const isTransitionCoolingDown = () => Date.now() - lastTransitionAtRef.current < transitionCooldownMs;
+        const isLegalModalOpen = () => (typeof window !== 'undefined'
+            ? window.document?.body?.classList.contains('legal-modal-open')
+            : false);
+        const isEventInsideLegalModal = (event) => {
+            const target = event.target;
+            return target instanceof Element && !!target.closest('.legal-modal');
+        };
 
         const touchSlop = perf.lowEndMobile ? 14 : TOUCH_THRESHOLD;
 
         const onWheel = (event) => {
+            if (isLegalModalOpen()) {
+                if (!isEventInsideLegalModal(event)) {
+                    event.preventDefault();
+                }
+                return;
+            }
             if (!shouldHandleStackScroll()) return;
             if (shouldAllowServicesInnerScroll(Math.sign(event.deltaY || 0))) return;
             if (shouldAllowFooterInnerScroll(Math.sign(event.deltaY || 0))) return;
@@ -409,6 +422,12 @@ const Home = () => {
         };
 
         const onTouchMove = (event) => {
+            if (isLegalModalOpen()) {
+                if (!isEventInsideLegalModal(event)) {
+                    event.preventDefault();
+                }
+                return;
+            }
             const touchY = event.touches[0]?.clientY;
             const startY = touchStartYRef.current;
             if (touchY == null || startY == null) return;
