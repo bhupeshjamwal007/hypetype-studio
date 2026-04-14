@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './ServiceTemplate.css';
 
 const ServicePageTemplate = ({
     accent,
@@ -17,6 +18,9 @@ const ServicePageTemplate = ({
     benefits = [],
     servicesTitle,
     services = [],
+    workVideos = [],
+    workImages = [],
+    workPdfs = [],
     ctaTitle,
     ctaDescription,
     ctaLabel = 'Book a Free Strategy Call',
@@ -80,6 +84,48 @@ const ServicePageTemplate = ({
                     </div>
                 </div>
             </section>
+
+            {(workVideos.length > 0 || workImages.length > 0) && (
+                <section className="branding-section work-section-container">
+                    <div className="branding-shell">
+                        <h2 className="branding-section-title work-title">Our Work</h2>
+
+                        <div className="media-flex-grid">
+                            {/* Videos */}
+                            {workVideos.map((videoSrc, index) => (
+                                <div key={`vid-${index}`} className="media-card">
+                                    <video autoPlay muted loop playsInline>
+                                        <source src={videoSrc} type="video/mp4" />
+                                    </video>
+                                </div>
+                            ))}
+
+                            {/* Images */}
+                            {workImages.map((imgSrc, index) => (
+                                <div key={`img-${index}`} className="media-card">
+                                    <img src={imgSrc} alt="Work Example" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* PDF SECTION */}
+            {workPdfs.length > 0 && (
+                <section className="branding-section work-section-container">
+                    <div className="branding-shell">
+                        <div className="pdf-container">
+                            {workPdfs.map((pdf, index) => (
+                                <a key={index} href={pdf.url} download className="pdf-download-btn">
+                                    Download {pdf.label || 'Project PDF'}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+            
 
             <section className="branding-cta-band">
                 <div className="branding-shell branding-cta-shell">

@@ -1,0 +1,105 @@
+/* Container for the "Our Work" section */
+.work-section-container {
+    padding-top: 0;
+}
+
+/* Center the title */
+.work-title {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 50px;
+}
+
+/* The wrapper that holds the videos/images */
+.media-flex-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 100px;
+}
+
+/* Individual video/image card */
+.media-card {
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    /* Default size for desktop */
+    max-width: 100%;
+    transition: transform 0.3s ease;
+}
+
+    .media-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .media-card video,
+    .media-card img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+/* PDF Buttons Container */
+.pdf-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.pdf-download-btn {
+    padding: 12px 24px;
+    background-color: var(--service-accent);
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+
+    .pdf-download-btn:hover {
+        opacity: 0.9;
+    }
+
+/* Mobile Adjustment */
+@media (max-width: 768px) {
+    .media-card {
+        max-width: 100%; /* Take full width on small screens */
+        height: 600px;
+    }
+}
+
+@media (max-width: 1440px) {
+    .media-card {
+        max-width: 100%; /* Take full width on medium screens */
+        width: 500px;
+        height: 600px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .branding-page .media-card {
+        max-width: 100%; /* Take full width on medium screens */
+        width: 400px;
+        height: 500px;
+        
+    }
+
+    .media-flex-grid {
+        gap: 44px;
+        
+    }
+}
+
+@media (max-width: 2560px) {
+    .branding-page .media-card {
+        max-width: 100%; /* Take full width on medium screens */
+        width: 500px;
+        height: 700px;
+        
+    }
+}
+
