@@ -1,5 +1,11 @@
 import React from 'react';
 import ServicePageTemplate from '../components/ServicePageTemplate';
+import brandGuidePdf from '../assets/brochures/brand-guide-holistic-copy.pdf';
+import brandingGuidePdf from '../assets/brochures/branding-guide.pdf';
+import aggarwalPdf from '../assets/brochures/aggarwal-2025.pdf';
+import brandGuidePreview from '../assets/brochures/previews/brand-guide-holistic-copy.jpg';
+import brandingGuidePreview from '../assets/brochures/previews/branding-guide.jpg';
+import aggarwalPreview from '../assets/brochures/previews/aggarwal-2025.jpg';
 
 const logoIntro = [
     'A logo is not just a symbol. It is the visual shortcut people use to remember your brand, trust your offer, and recognize your presence instantly across every touchpoint.',
@@ -44,6 +50,12 @@ const Logo = () => {
             benefits={logoBenefits}
             servicesTitle="Our Logo Design Services"
             services={logoServices}
+            workImages={['/images/logo-1.jpeg', '/images/logo-2.jpeg', '/images/logo-3.jpeg', '/images/logo-4.jpg', '/images/logo-5.png']}
+            workPdfs={[
+                { label: 'Brand Guide Holistic', url: brandGuidePdf, previewUrl: brandGuidePreview },
+                { label: 'Branding Guide', url: brandingGuidePdf, previewUrl: brandingGuidePreview },
+                { label: 'Aggarwal 2025', url: aggarwalPdf, previewUrl: aggarwalPreview },
+            ]}
             ctaTitle="Ready to Build a Logo People Remember?"
             ctaDescription="Let's create a logo identity that feels sharp, premium, and ready to scale with your brand."
         />
