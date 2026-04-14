@@ -1,6 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
+import pdfWorkerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import './ServiceTemplate.css';
+
+GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
+
+const PdfPreviewCard = ({ pdf, onOpen, onDownload }) => {
+    return (
+        <article className="pdf-card">
+            <button
+                type="button"
+                className="pdf-preview-button"
+                onClick={() => onOpen(pdf)}
+                aria-label={`Preview ${pdf.label}`}
+            >
+                {pdf.previewUrl ? (
+                    <img src={pdf.previewUrl} alt={`${pdf.label} first page preview`} className="pdf-preview-image" />
+                ) : <div className="pdf-preview-fallback">Preview unavailable</div>}
+            </button>
+            <h3 className="pdf-card-title">{pdf.label || 'Project Brochure'}</h3>
+            <div className="pdf-card-actions">
+                <button
+                    type="button"
+                    className="pdf-btn pdf-btn-view"
+                    onClick={() => onOpen(pdf)}
+                >
+                    See Our Brochure
+                </button>
+                <button
+                    type="button"
+                    className="pdf-btn pdf-btn-download"
+                    onClick={() => onDownload(pdf)}
+                >
+                    Download Brochure
+                </button>
+            </div>
+        </article>
+    );
+};
 
 const ServicePageTemplate = ({
     accent,
@@ -31,6 +69,132 @@ const ServicePageTemplate = ({
         '--service-accent-soft': accentSoft,
         '--service-accent-shadow': accentShadow,
     };
+
+    const [selectedImg, setSelectedImg] = useState(null);
+    const [selectedPdf, setSelectedPdf] = useState(null);
+    const [pdfViewerImage, setPdfViewerImage] = useState('');
+    const [pdfViewerPage, setPdfViewerPage] = useState(1);
+    const [pdfViewerTotalPages, setPdfViewerTotalPages] = useState(1);
+    const [pdfViewerLoading, setPdfViewerLoading] = useState(false);
+    const [pdfViewerError, setPdfViewerError] = useState('');
+
+    useEffect(() => {
+        let isCancelled = false;
+
+        const renderPdfPage = async () => {
+            if (!selectedPdf) {
+                setPdfViewerImage('');
+                setPdfViewerError('');
+                setPdfViewerPage(1);
+                setPdfViewerTotalPages(1);
+                return;
+            }
+
+            try {
+                setPdfViewerLoading(true);
+                setPdfViewerError('');
+                const response = await fetch(selectedPdf.url, { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error('Unable to fetch brochure file');
+                }
+                const pdfBuffer = await response.arrayBuffer();
+                const pdfData = new Uint8Array(pdfBuffer);
+                const doc = await getDocument({
+                    data: pdfData,
+                    disableWorker: true,
+                    useWorkerFetch: false,
+                }).promise;
+                const totalPages = doc.numPages || 1;
+                const safePage = Math.min(Math.max(pdfViewerPage, 1), totalPages);
+                const page = await doc.getPage(safePage);
+                const viewport = page.getViewport({ scale: 1.3 });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                if (!ctx) {
+                    throw new Error('Canvas context unavailable');
+                }
+
+                canvas.width = Math.floor(viewport.width);
+                canvas.height = Math.floor(viewport.height);
+
+                await page.render({
+                    canvasContext: ctx,
+                    viewport,
+                }).promise;
+
+                if (!isCancelled) {
+                    setPdfViewerImage(canvas.toDataURL('image/jpeg', 0.95));
+                    setPdfViewerTotalPages(totalPages);
+                    if (safePage !== pdfViewerPage) {
+                        setPdfViewerPage(safePage);
+                    }
+                }
+
+                await doc.destroy();
+            } catch (error) {
+                console.error('Brochure render failed:', error);
+                if (!isCancelled) {
+                    setPdfViewerError('Unable to load brochure pages.');
+                    setPdfViewerImage('');
+                }
+            } finally {
+                if (!isCancelled) {
+                    setPdfViewerLoading(false);
+                }
+            }
+        };
+
+        renderPdfPage();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [selectedPdf, pdfViewerPage]);
+
+    const closePdfViewer = () => {
+        setSelectedPdf(null);
+        setPdfViewerImage('');
+        setPdfViewerError('');
+        setPdfViewerPage(1);
+        setPdfViewerTotalPages(1);
+        setPdfViewerLoading(false);
+    };
+
+    const openPdfViewer = (pdf) => {
+        setSelectedPdf(pdf);
+        setPdfViewerPage(1);
+    };
+
+    const downloadBrochure = (pdf) => {
+        fetch(pdf.url)
+            .then((response) => response.blob())
+            .then((blob) => {
+                const blobUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = pdf.url.split('/').pop() || 'brochure.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(blobUrl);
+            })
+            .catch(() => {
+                window.location.href = pdf.url;
+            });
+    };
+
+    useEffect(() => {
+        const handleEscape = (event) => {
+            if (event.key === 'Escape') {
+                setSelectedImg(null);
+                setSelectedPdf(null);
+            }
+        };
+
+        window.addEventListener('keydown', handleEscape);
+        return () => window.removeEventListener('keydown', handleEscape);
+    }, []);
 
     return (
         <div className="branding-page" style={theme}>
@@ -86,44 +250,147 @@ const ServicePageTemplate = ({
             </section>
 
             {(workVideos.length > 0 || workImages.length > 0) && (
+                <section className="branding-section work-section-container" style={theme}>
+                    <div className="branding-shell">
+                        
+                        {/* 1. VIDEO SECTION (Only shows if videos exist) */}
+                        {workVideos.length > 0 && (
+                            <>
+                                <h2 className="branding-section-title work-title">Our Work</h2>
+                                <div className="media-flex-grid">
+                                    {workVideos.map((videoSrc, index) => (
+                                        <div key={`vid-${index}`} className="media-card">
+                                            <video autoPlay muted loop playsInline>
+                                                <source src={videoSrc} type="video/mp4" />
+                                            </video>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+
+                        {/* 2. LOGO MARQUEE SECTION (Only shows if images exist) */}
+                        {workImages.length > 0 && (
+                            <div className="logo-marquee-wrapper" style={{ marginTop: workVideos.length > 0 ? '80px' : '0' }}>
+                                <h2 className="branding-section-title work-title">Our Logo Work</h2>
+                                <div className="marquee-container">
+                                    <div className="marquee-content">
+                                        {[...workImages, ...workImages].map((imgSrc, index) => (
+                                            <div
+                                                key={`logo-${index}`}
+                                                className="logo-card"
+                                                onClick={() => setSelectedImg(imgSrc)}
+                                                role="button"
+                                                tabIndex={0}
+                                                onKeyDown={(event) => {
+                                                    if (event.key === 'Enter' || event.key === ' ') {
+                                                        event.preventDefault();
+                                                        setSelectedImg(imgSrc);
+                                                    }
+                                                }}
+                                            >
+                                                <img src={imgSrc} alt="Logo Design" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                    </div>
+                </section>
+                        
+            )}
+
+            {selectedImg && (
+                <div className="logo-popup-overlay" onClick={() => setSelectedImg(null)}>
+                    <div className="logo-popup-content" onClick={(event) => event.stopPropagation()}>
+                        <button
+                            type="button"
+                            className="close-btn"
+                            aria-label="Close image preview"
+                            onClick={() => setSelectedImg(null)}
+                        >
+                            ×
+                        </button>
+                        <img src={selectedImg} alt="Enlarged logo preview" />
+                    </div>
+                </div>
+            )}
+
+            {workPdfs.length > 0 && (
                 <section className="branding-section work-section-container">
                     <div className="branding-shell">
-                        <h2 className="branding-section-title work-title">Our Work</h2>
-
-                        <div className="media-flex-grid">
-                            {/* Videos */}
-                            {workVideos.map((videoSrc, index) => (
-                                <div key={`vid-${index}`} className="media-card">
-                                    <video autoPlay muted loop playsInline>
-                                        <source src={videoSrc} type="video/mp4" />
-                                    </video>
-                                </div>
-                            ))}
-
-                            {/* Images */}
-                            {workImages.map((imgSrc, index) => (
-                                <div key={`img-${index}`} className="media-card">
-                                    <img src={imgSrc} alt="Work Example" />
-                                </div>
+                        <h2 className="branding-section-title work-title">Brochures</h2>
+                        <div className="pdf-grid">
+                            {workPdfs.map((pdf) => (
+                                <PdfPreviewCard key={pdf.url} pdf={pdf} onOpen={openPdfViewer} onDownload={downloadBrochure} />
                             ))}
                         </div>
                     </div>
                 </section>
             )}
 
-            {/* PDF SECTION */}
-            {workPdfs.length > 0 && (
-                <section className="branding-section work-section-container">
-                    <div className="branding-shell">
-                        <div className="pdf-container">
-                            {workPdfs.map((pdf, index) => (
-                                <a key={index} href={pdf.url} download className="pdf-download-btn">
-                                    Download {pdf.label || 'Project PDF'}
-                                </a>
-                            ))}
+            {selectedPdf && (
+                <div className="logo-popup-overlay pdf-popup-overlay" onClick={closePdfViewer}>
+                    <div className="pdf-popup-content" onClick={(event) => event.stopPropagation()}>
+                        <button
+                            type="button"
+                            className="close-btn"
+                            aria-label="Close brochure preview"
+                            onClick={closePdfViewer}
+                        >
+                            ×
+                        </button>
+                        <h3 className="pdf-popup-title">{selectedPdf.label || 'Brochure Preview'}</h3>
+                        <div className="pdf-viewer-toolbar">
+                            <button
+                                type="button"
+                                className="pdf-btn pdf-btn-download"
+                                disabled={pdfViewerLoading || pdfViewerPage <= 1}
+                                onClick={() => setPdfViewerPage((page) => Math.max(1, page - 1))}
+                            >
+                                Prev
+                            </button>
+                            <span className="pdf-page-indicator">
+                                Page {pdfViewerPage} of {pdfViewerTotalPages}
+                            </span>
+                            <button
+                                type="button"
+                                className="pdf-btn pdf-btn-download"
+                                disabled={pdfViewerLoading || pdfViewerPage >= pdfViewerTotalPages}
+                                onClick={() => setPdfViewerPage((page) => Math.min(pdfViewerTotalPages, page + 1))}
+                            >
+                                Next
+                            </button>
+                        </div>
+                        <div className="pdf-popup-frame">
+                            {pdfViewerLoading && <p className="pdf-popup-fallback">Loading brochure...</p>}
+                            {!pdfViewerLoading && pdfViewerError && <p className="pdf-popup-fallback">{pdfViewerError}</p>}
+                            {!pdfViewerLoading && !pdfViewerError && pdfViewerImage && (
+                                <img
+                                    src={pdfViewerImage}
+                                    alt={`${selectedPdf.label || 'Brochure'} page ${pdfViewerPage}`}
+                                    className="pdf-popup-image"
+                                />
+                            )}
+                        </div>
+                        <div className="pdf-popup-actions">
+                            {pdfViewerError && (
+                                <button
+                                    type="button"
+                                    className="pdf-btn pdf-btn-view"
+                                    onClick={() => window.open(selectedPdf.url, '_blank', 'noopener,noreferrer')}
+                                >
+                                    Open File
+                                </button>
+                            )}
+                            <button type="button" className="pdf-btn pdf-btn-download" onClick={() => downloadBrochure(selectedPdf)}>
+                                Download Brochure
+                            </button>
                         </div>
                     </div>
-                </section>
+                </div>
             )}
             
 
