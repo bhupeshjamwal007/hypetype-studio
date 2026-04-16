@@ -13,14 +13,17 @@ const brandingServices = [
     {
         title: 'Logo Design',
         description: 'Memorable, scalable logo systems and visual identities.',
+        to: '/services/branding/logo',
     },
     {
         title: 'Packaging',
         description: 'High-impact packaging designs that capture attention.',
+        to: '/services/branding/packaging',
     },
     {
         title: 'Brochures & Menu Design',
         description: 'Strategically designed brochures and menus that communicate your offerings clearly, elevate brand perception, and influence customer decisions.',
+        to: '/services/branding/brochure-menu',
     },
 ];
 
@@ -64,6 +67,9 @@ const Branding = () => {
                             <article key={service.title} className="branding-service-card">
                                 <h3>{service.title}</h3>
                                 <p>{service.description}</p>
+                                <Link to={service.to} className="branding-service-card-cta">
+                                    Know More <span aria-hidden="true">&rarr;</span>
+                                </Link>
                             </article>
                         ))}
                     </div>

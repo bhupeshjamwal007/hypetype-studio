@@ -38,7 +38,7 @@
 }
 
 .logo-image-wrapper .branding-section-title {
-    margin-bottom: 12px;
+    margin-bottom: 42px;
 }
 
 .carousel-shell {
@@ -74,13 +74,14 @@
     gap: clamp(12px, 1.2vw, 18px);
     scroll-behavior: smooth;
     scrollbar-width: none;
+    padding: 6px 4px;
 }
 
 .work-image-grid::-webkit-scrollbar {
     display: none;
 }
 
-.work-image-grid > .logo-card {
+.work-image-grid>.logo-card {
     flex: 0 0 calc((100% - (3 * clamp(12px, 1.2vw, 18px))) / 4);
     min-width: 220px;
 }
@@ -89,14 +90,20 @@
     position: relative;
 }
 
-.logo-card > img {
+.logo-card>img {
     width: 100%;
     height: clamp(340px, 34vw, 460px);
     object-fit: cover;
     background: #ffffff;
     border-radius: 10px;
     border: 2px solid transparent;
-    transition: border-color 0.22s ease;
+    transition: border-color 0.22s ease, transform 0.22s ease;
+}
+
+.logo-card:hover>img {
+    border-color: var(--service-accent);
+    transform: translateY(-2px);
+    cursor: pointer;
 }
 
 .social-work-card {
@@ -119,7 +126,7 @@
     border-color: var(--service-accent);
 }
 
-.social-work-card:hover > img {
+.social-work-card:hover>img {
     border-color: var(--service-accent);
 }
 
@@ -180,6 +187,10 @@
     font-size: 36px;
     line-height: 1;
     cursor: pointer;
+}
+
+.brochure-section.work-section-container {
+    background-color: #f1efea;
 }
 
 .pdf-grid {
@@ -364,5 +375,4 @@
     }
 }
 
-@media (min-width: 2560px) {
-}
+@media (min-width: 2560px) {}
