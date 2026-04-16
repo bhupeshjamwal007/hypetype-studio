@@ -6,7 +6,7 @@ import './ServiceTemplate.css';
 
 GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
 
-const PdfPreviewCard = ({ pdf, onOpen, onDownload }) => {
+const PdfPreviewCard = ({ pdf, onOpen, onDownload, buttonLabel = "Download Brochure", showPreviewButton = true }) => {
     return (
         <article className="pdf-card">
             <button
@@ -21,19 +21,21 @@ const PdfPreviewCard = ({ pdf, onOpen, onDownload }) => {
             </button>
             <h3 className="pdf-card-title">{pdf.label || 'Project Brochure'}</h3>
             <div className="pdf-card-actions">
-                <button
-                    type="button"
-                    className="pdf-btn pdf-btn-view"
-                    onClick={() => onOpen(pdf)}
-                >
-                    See Our Brochure
-                </button>
+                {showPreviewButton && (
+                    <button
+                        type="button"
+                        className="pdf-btn pdf-btn-view"
+                        onClick={() => onOpen(pdf)}
+                    >
+                        See Our Brochure
+                    </button>
+                )}
                 <button
                     type="button"
                     className="pdf-btn pdf-btn-download"
                     onClick={() => onDownload(pdf)}
                 >
-                    Download Brochure
+                    {buttonLabel}
                 </button>
             </div>
         </article>
@@ -59,6 +61,8 @@ const ServicePageTemplate = ({
     workVideos = [],
     workImages = [],
     workPdfs = [],
+    pdfButtonLabel = "Download Brochure",
+    pdfShowPreviewButton = true,
     ctaTitle,
     ctaDescription,
     ctaLabel = 'Book a Free Strategy Call',
@@ -208,7 +212,7 @@ const ServicePageTemplate = ({
             </section>
 
             {introParagraphs.length > 0 && (
-                <section className="branding-section branding-white-section">
+                <section className="branding-section branding-muted-section">
                     <div className="branding-shell branding-narrow-shell">
                         <h2 className="branding-section-title">{introTitle}</h2>
                         <div className="branding-section-copy branding-section-copy-stack">
@@ -250,7 +254,7 @@ const ServicePageTemplate = ({
             </section>
 
             {(workVideos.length > 0 || workImages.length > 0) && (
-                <section className="branding-section work-section-container" style={theme}>
+                <section className="branding-section branding-white-section work-section-container" style={theme}>
                     <div className="branding-shell">
                         
                         {/* 1. VIDEO SECTION (Only shows if videos exist) */}
@@ -269,30 +273,28 @@ const ServicePageTemplate = ({
                             </>
                         )}
 
-                        {/* 2. LOGO MARQUEE SECTION (Only shows if images exist) */}
+                        {/* 2. LOGO IMAGE GRID SECTION (Only shows if images exist) */}
                         {workImages.length > 0 && (
-                            <div className="logo-marquee-wrapper" style={{ marginTop: workVideos.length > 0 ? '80px' : '0' }}>
+                            <div className="logo-image-wrapper" style={{ marginTop: workVideos.length > 0 ? '80px' : '0' }}>
                                 <h2 className="branding-section-title work-title">Our Logo Work</h2>
-                                <div className="marquee-container">
-                                    <div className="marquee-content">
-                                        {[...workImages, ...workImages].map((imgSrc, index) => (
-                                            <div
-                                                key={`logo-${index}`}
-                                                className="logo-card"
-                                                onClick={() => setSelectedImg(imgSrc)}
-                                                role="button"
-                                                tabIndex={0}
-                                                onKeyDown={(event) => {
-                                                    if (event.key === 'Enter' || event.key === ' ') {
-                                                        event.preventDefault();
-                                                        setSelectedImg(imgSrc);
-                                                    }
-                                                }}
-                                            >
-                                                <img src={imgSrc} alt="Logo Design" />
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div className="work-image-grid">
+                                    {workImages.map((imgSrc, index) => (
+                                        <div
+                                            key={`logo-${index}`}
+                                            className="logo-card"
+                                            onClick={() => setSelectedImg(imgSrc)}
+                                            role="button"
+                                            tabIndex={0}
+                                            onKeyDown={(event) => {
+                                                if (event.key === 'Enter' || event.key === ' ') {
+                                                    event.preventDefault();
+                                                    setSelectedImg(imgSrc);
+                                                }
+                                            }}
+                                        >
+                                            <img src={imgSrc} alt="Logo Design" />
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         )}
@@ -319,12 +321,12 @@ const ServicePageTemplate = ({
             )}
 
             {workPdfs.length > 0 && (
-                <section className="branding-section work-section-container">
+                <section className="branding-section branding-muted-section work-section-container brochure-section">
                     <div className="branding-shell">
                         <h2 className="branding-section-title work-title">Brochures</h2>
                         <div className="pdf-grid">
                             {workPdfs.map((pdf) => (
-                                <PdfPreviewCard key={pdf.url} pdf={pdf} onOpen={openPdfViewer} onDownload={downloadBrochure} />
+                                <PdfPreviewCard key={pdf.url} pdf={pdf} onOpen={openPdfViewer} onDownload={downloadBrochure} buttonLabel={pdfButtonLabel} showPreviewButton={pdfShowPreviewButton} />
                             ))}
                         </div>
                     </div>

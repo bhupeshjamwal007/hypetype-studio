@@ -1,11 +1,12 @@
 .work-section-container {
-    padding-top: 0;
+    padding: 28px 0 24px;
+    background: #ffffff;
 }
 
 .work-title {
     text-align: center;
     width: 100%;
-    margin: 50px 0 20px;
+    margin: 0 0 6px;
 }
 
 .media-flex-grid {
@@ -21,11 +22,6 @@
     background: #000;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     width: min(520px, 100%);
-    transition: transform 0.3s ease;
-}
-
-.media-card:hover {
-    transform: translateY(-5px);
 }
 
 .media-card video,
@@ -35,54 +31,69 @@
     height: auto;
 }
 
-.marquee-container {
-    overflow: hidden;
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-    background: transparent;
-    padding: 40px 0;
-    position: relative;
-    border-radius: 0;
+.logo-image-wrapper {
+    background: #ffffff;
+    padding: 24px 0 16px;
+    border-radius: 20px;
 }
 
-.marquee-content {
-    display: flex;
-    width: max-content;
-    min-width: 100%;
-    animation: scroll-left 44s linear infinite;
+.logo-image-wrapper .branding-section-title {
+    margin-bottom: 12px;
 }
 
-@keyframes scroll-left {
-    from {
-        transform: translateX(0);
-    }
-
-    to {
-        transform: translateX(-50%);
-    }
+.work-image-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: clamp(14px, 1.5vw, 24px);
 }
 
 .logo-card {
-    flex: 0 0 clamp(170px, 14vw, 360px);
-    margin: 0 clamp(12px, 1.6vw, 26px);
-    cursor: pointer;
-    transition: transform 0.25s ease;
     position: relative;
 }
 
-.logo-card img {
+.logo-card > img {
     width: 100%;
-    height: clamp(130px, 11vw, 260px);
-    object-fit: contain;
-    filter: grayscale(100%);
-    transition: filter 0.35s ease, transform 0.25s ease;
-    background: transparent;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    background: #ffffff;
+    border-radius: 10px;
 }
 
-.logo-card:hover img {
-    filter: grayscale(0%);
-    transform: scale(1.06);
+.social-work-card {
+    display: grid;
+    gap: 10px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 8px 20px rgba(17, 24, 39, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-work-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgba(17, 24, 39, 0.12);
+}
+
+.social-work-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #111827;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.social-work-link:hover {
+    color: var(--service-accent);
+}
+
+.social-work-instagram-icon {
+    width: 14px;
+    height: 14px;
+    display: block;
+    flex: 0 0 14px;
 }
 
 .logo-popup-overlay {
@@ -136,6 +147,7 @@
     box-shadow: 0 12px 30px rgba(22, 22, 22, 0.08);
     overflow: hidden;
     display: grid;
+    grid-template-rows: auto auto 1fr;
     gap: 12px;
     padding-bottom: 16px;
 }
@@ -149,10 +161,13 @@
 
 .pdf-preview-image {
     width: 100%;
-    height: 220px;
-    object-fit: cover;
-    object-position: top;
+    height: 260px;
+    object-fit: contain;
+    object-position: center;
     display: block;
+    background: #f6f8fb;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .pdf-preview-fallback {
@@ -273,17 +288,8 @@
         gap: 32px;
     }
 
-    .marquee-container {
-        padding: 30px 0;
-    }
-
-    .logo-card {
-        flex-basis: clamp(150px, 20vw, 250px);
-        margin: 0 14px;
-    }
-
-    .logo-card img {
-        height: clamp(120px, 16vw, 200px);
+    .work-image-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .pdf-grid {
@@ -296,17 +302,16 @@
         width: 100%;
     }
 
-    .logo-card {
-        flex-basis: clamp(130px, 28vw, 220px);
-        margin: 0 10px;
-    }
-
-    .logo-card img {
-        height: clamp(100px, 24vw, 160px);
+    .work-image-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .pdf-grid {
         grid-template-columns: 1fr;
+    }
+
+    .pdf-preview-image {
+        height: 220px;
     }
 
     .pdf-popup-frame {
@@ -315,24 +320,15 @@
 }
 
 @media (min-width: 1280px) {
-    .logo-card {
-        flex-basis: clamp(210px, 16vw, 320px);
+    .work-image-grid {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
     }
 }
 
 @media (min-width: 1440px) {
-    .logo-card {
-        flex-basis: clamp(230px, 15vw, 340px);
-    }
+    .work-image-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
 }
 
 @media (min-width: 2560px) {
-    .logo-card {
-        flex-basis: clamp(300px, 12vw, 420px);
-        margin: 0 24px;
-    }
-
-    .logo-card img {
-        height: clamp(180px, 9vw, 320px);
-    }
+    .work-image-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
 }

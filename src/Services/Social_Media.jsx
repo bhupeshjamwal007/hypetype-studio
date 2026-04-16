@@ -1,6 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../App.css';
+import '../components/ServiceTemplate.css';
+import CARiDCaseStudyPreview from '../assets/brochures/previews/CARiD.jpg';
+import FBVictoriaPreview from '../assets/brochures/previews/FB-Victoria.jpg';
+import TrendsavvyCaseStudyPreview from '../assets/brochures/previews/Trendsavvy-Case-Study.jpg';
+
+const CARiDCaseStudyPdf = '/brochures/CARiD-Case-Study_compressed.pdf';
+const FBVictoriaPdf = '/brochures/FB-Victoria.pdf';
+const TrendsavvyCaseStudyPdf = '/brochures/Trendsavvy-Case-Study.pdf';
+
 
 const socialBenefits = [
     'Strengthen brand recognition and recall',
@@ -73,38 +82,82 @@ const discoverServices = [
     {
         title: 'Logo Design',
         description: 'A logo is the visual identity of a brand, combining creativity and strategy to communicate its values, personality, and message at a glance.',
-        icon: '🎨',
+        icon: 'LD',
     },
     {
         title: 'Packaging',
         description: 'Packaging is more than just protection, it is a powerful tool that presents a product, communicates its value, and attracts customers.',
-        icon: '📦',
+        icon: 'PK',
     },
     {
         title: 'Performance Marketing',
         description: 'ROI-focused campaigns optimized for conversions and business growth.',
-        icon: '📈',
+        icon: 'PM',
     },
     {
         title: 'Web & Apps Development',
         description: 'Custom digital experiences built to improve usability, performance, and business growth.',
-        icon: '💻',
+        icon: 'WD',
     },
     {
         title: 'Commercial & Ads',
         description: 'High-impact advertising content built to grab attention and turn viewers into customers.',
-        icon: '🎬',
+        icon: 'CA',
     },
     {
         title: 'Artist Management',
         description: 'Strategic artist management that builds visibility, authority, and long-term opportunities.',
-        icon: '🎤',
+        icon: 'AM',
     },
     {
         title: 'Event Management',
         description: 'Memorable event experiences designed to engage audiences and strengthen your brand presence.',
-        icon: '🎭',
+        icon: 'EM',
     },
+];
+
+const workItems = [
+    {
+        src: '/images/social-1.jpeg',
+        title: 'Perfect Meats',
+        instagramUrl: 'https://www.instagram.com/perfectmeats_?igsh=MW40dmI2MDJyYW15eg==',
+    },
+    {
+        src: '/images/social-2.jpeg',
+        title: 'Northern Resturant Consulting',
+        instagramUrl: 'https://www.instagram.com/northernrestaurantconsulting?igsh=bHczNnV2cHVxNTMx',
+    },
+    {
+        src: '/images/social-3.jpeg',
+        title: 'Holistic True Advice',
+        instagramUrl: 'https://www.instagram.com/holistictrueadvice?igsh=MWFieWdkamV2ZG5jZA==',
+    },
+    {
+        src: '/images/social-4.jpeg',
+        title: 'Rakshak Puri',
+        instagramUrl: 'https://www.instagram.com/rakshakpuri_menswear?igsh=MWZuem9rOXdzdnZyZA=',
+    },
+    {
+        src: '/images/social-5.jpeg',
+        title: 'Chamak By Saloni Sabharwal',
+        instagramUrl: 'https://www.instagram.com/chamakbysaloni?igsh=MTQ4cXFwcjhnZDRxcQ==',
+    },
+    {
+        src: '/images/social-6.jpeg',
+        title: 'Soado',
+        instagramUrl: 'https://www.instagram.com/soado.jammu?igsh=N3Joazh0MHVkOWZo',
+    },
+    {
+        src: '/images/social-7.jpeg',
+        title: 'Label Nidhi Aggarwal',
+        instagramUrl: 'https://www.instagram.com/labelnidhiaggarwal?igsh=OWVnZWZsZXZ3cXBk',
+    },
+];
+
+const workPdfs = [
+    { label: 'CARiD Case Study', url: CARiDCaseStudyPdf, previewUrl: CARiDCaseStudyPreview },
+    { label: 'FB-Victoria', url: FBVictoriaPdf, previewUrl: FBVictoriaPreview },
+    { label: 'Trendsavvy-Case-Study', url: TrendsavvyCaseStudyPdf, previewUrl: TrendsavvyCaseStudyPreview },
 ];
 
 const SocialMedia = () => {
@@ -166,7 +219,7 @@ const SocialMedia = () => {
                     <div className="branding-benefits-grid">
                         {socialBenefits.map((item) => (
                             <div key={item} className="branding-benefit-item">
-                                <span className="branding-benefit-icon" aria-hidden="true">✓</span>
+                                <span className="branding-benefit-icon" aria-hidden="true">&#10003;</span>
                                 <span>{item}</span>
                             </div>
                         ))}
@@ -182,6 +235,60 @@ const SocialMedia = () => {
                             <article key={service.title} className="branding-service-card social-service-card">
                                 <h3>{service.title}</h3>
                                 <p>{service.description}</p>
+                            </article>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <section className="branding-section work-section-container">
+                <div className="branding-shell">
+                    <h2 className="branding-section-title work-title">Our Work</h2>
+                    <div className="logo-image-wrapper">
+                        <div className="work-image-grid">
+                            {workItems.map((item) => (
+                                <div key={item.src} className="logo-card social-work-card">
+                                    <img src={item.src} alt={`${item.title} social media work`} />
+                                    <a
+                                        href={item.instagramUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="social-work-link"
+                                        aria-label={`${item.title} on Instagram`}
+                                    >
+                                        <img
+                                            src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
+                                            alt=""
+                                            aria-hidden="true"
+                                            className="social-work-instagram-icon"
+                                        />
+                                        <span>{item.title}</span>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="branding-section branding-white-section brochures-section">
+                <div className="branding-shell">
+                    <h2 className="branding-section-title work-title">Brochures</h2>
+                    <div className="pdf-grid">
+                        {workPdfs.map((pdf) => (
+                            <article key={pdf.url} className="pdf-card">
+                                <img src={pdf.previewUrl} alt={`${pdf.label} preview`} className="pdf-preview-image" />
+                                <h3 className="pdf-card-title">{pdf.label}</h3>
+                                <div className="pdf-card-actions">
+                                    <a
+                                        href={pdf.url}
+                                        download
+                                        className="pdf-btn pdf-btn-download"
+                                        aria-label={`Download ${pdf.label} brochure`}
+                                    >
+                                        Download Our Brochure
+                                    </a>
+                                </div>
                             </article>
                         ))}
                     </div>
@@ -233,7 +340,7 @@ const SocialMedia = () => {
                         Unlock your brand&apos;s full potential with our innovative strategies. We harness data-driven insights to drive growth, engagement, and conversions.
                     </p>
                     <div className="social-discover-row">
-                        <button type="button" className="social-discover-nav" aria-label="Previous services" onClick={handleDiscoverPrevious}>←</button>
+                        <button type="button" className="social-discover-nav" aria-label="Previous services" onClick={handleDiscoverPrevious}>&larr;</button>
                         <div className="social-discover-grid">
                             {activeDiscoverServices.map((service) => (
                                 <article
@@ -246,7 +353,7 @@ const SocialMedia = () => {
                                 </article>
                             ))}
                         </div>
-                        <button type="button" className="social-discover-nav" aria-label="Next services" onClick={handleDiscoverNext}>→</button>
+                        <button type="button" className="social-discover-nav" aria-label="Next services" onClick={handleDiscoverNext}>&rarr;</button>
                     </div>
                 </div>
             </section>
