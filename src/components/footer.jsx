@@ -8,7 +8,7 @@ const Footer = ({ style: footerStyle }) => {
                 <div className="about-inline-footer">
                     <div className="about-inline-footer-top">
                         <div className="footer-brand-block">
-                            <Link to="/#home-page" className="footer-logo" aria-label="HYPETYPE – Home">
+                            <Link to="/HypeType-page" className="footer-logo" aria-label="HYPETYPE – Home">
                                 HYPETYPE
                             </Link>
                         </div>

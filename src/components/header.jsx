@@ -108,7 +108,7 @@ const Header = () => {
     return (
         <header className="site-header">
             <div className="site-header-inner">
-                <Link to="/#home-page" className="logo" aria-label="HYPETYPE home">
+                <Link to="/HypeType-page" className="logo" aria-label="HYPETYPE home">
                     <span className="logo-wordmark">
                         hypetype
                         <span className="logo-dot" aria-hidden="true" />
@@ -133,7 +133,7 @@ const Header = () => {
                     </button>
 
                     <nav className="site-nav" aria-label="Primary navigation">
-                        <a href="/#home-page">Home</a>
+                        <a href="/HypeType-page">Home</a>
                         <div
                             className={`site-nav-dropdown${servicesOpen ? ' is-open' : ''}`}
                             ref={dropdownRef}
@@ -163,8 +163,10 @@ const Header = () => {
                                     onMouseEnter={handleBrandingEnter}
                                     onMouseLeave={handleBrandingLeave}
                                 >
-                                    <button
-                                        type="button"
+                                    <Link to="/services/Branding"
+                                        onClick={closeServicesMenu}
+
+                                        
                                         className="site-nav-submenu-trigger"
                                         onClick={(event) => {
                                             setBrandingOpen((current) => !current);
@@ -172,9 +174,19 @@ const Header = () => {
                                         }}
                                         aria-expanded={brandingOpen}
                                         aria-haspopup="true"
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                            textDecoration: 'none',
+                                            color: 'inherit',
+                                            boxSizing: 'border-box'
+                                        }}
                                     >
-                                        Branding ▸
-                                    </button>
+                                        <span>Branding</span>
+                                        <span>▸</span>
+                                    </Link>
                                     <div className="site-nav-submenu-panel">
                                         <Link to="/services/logo" onClick={closeServicesMenu}>Logo</Link>
                                         <Link to="/services/packaging" onClick={closeServicesMenu}>Packaging</Link>
