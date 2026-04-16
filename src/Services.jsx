@@ -13,13 +13,13 @@ const serviceGroups = [
         icon: 'SM',
         title: 'Content & Social Growth',
         description: 'Social media strategy, content planning, and creative production built to increase visibility, engagement, and brand recall.',
-        to: '/services/social-media',
+        to: '/services/social-media-marketing',
     },
     {
         icon: 'AD',
         title: 'Ad Film Production',
         description: 'Commercial shoots, campaign visuals, and storytelling-led production that help your brand stand out across platforms.',
-        to: '/services/commercial-and-ads',
+        to: '/services/commercial-ads',
     },
     {
         icon: 'PM',
@@ -31,7 +31,7 @@ const serviceGroups = [
         icon: 'DX',
         title: 'Digital Solutions',
         description: 'Websites, mobile apps, and scalable digital systems that support modern brand growth with strong user experience.',
-        to: '/services/web-apps-development',
+        to: '/services/web-development',
     },
     {
         icon: 'AE',

@@ -427,15 +427,15 @@ const Home = () => {
                             </p>
                             <div className="pyramid-grid">
                                 <div className="card-row top-row">
-                                    <Link to="/Services/Branding" className="service-card"><div className="service-icon" aria-hidden="true">🎯</div><h3 className="card-title">Branding</h3><span className="learn-more-btn">Learn More</span></Link>
-                                    <Link to="/Services/Social_Media" className="service-card"><div className="service-icon" aria-hidden="true">📱</div><h3 className="card-title">Social Media</h3><span className="learn-more-btn">Learn More</span></Link>
-                                    <Link to="/Services/Performance_Marketting" className="service-card"><div className="service-icon" aria-hidden="true">📈</div><h3 className="card-title">Performance Marketing</h3><span className="learn-more-btn">Learn More</span></Link>
-                                    <Link to="/Services/Commercial&Ads" className="service-card"><div className="service-icon" aria-hidden="true">🎬</div><h3 className="card-title">Commercials And Ads</h3><span className="learn-more-btn">Learn More</span></Link>
+                                    <Link to="/services/branding" className="service-card"><div className="service-icon" aria-hidden="true">🎯</div><h3 className="card-title">Branding</h3><span className="learn-more-btn">Learn More</span></Link>
+                                    <Link to="/services/social-media-marketing" className="service-card"><div className="service-icon" aria-hidden="true">📱</div><h3 className="card-title">Social Media</h3><span className="learn-more-btn">Learn More</span></Link>
+                                    <Link to="/services/performance-marketing" className="service-card"><div className="service-icon" aria-hidden="true">📈</div><h3 className="card-title">Performance Marketing</h3><span className="learn-more-btn">Learn More</span></Link>
+                                    <Link to="/services/commercial-ads" className="service-card"><div className="service-icon" aria-hidden="true">🎬</div><h3 className="card-title">Commercials And Ads</h3><span className="learn-more-btn">Learn More</span></Link>
                                 </div>
                                 <div className="card-row bottom-row">
-                                    <Link to="/Services/Web&AppsDevelopment" className="service-card"><div className="service-icon" aria-hidden="true">💻</div><h3 className="card-title">Website & Mobile Apps Development</h3><span className="learn-more-btn">Learn More</span></Link>
-                                    <Link to="/Services/Artist_Management" className="service-card"><div className="service-icon" aria-hidden="true">🎤</div><h3 className="card-title">Artist Management</h3><span className="learn-more-btn">Learn More</span></Link>
-                                    <Link to="/Services/Event_Management" className="service-card"><div className="service-icon" aria-hidden="true">🎭</div><h3 className="card-title">Event Management</h3><span className="learn-more-btn">Learn More</span></Link>
+                                    <Link to="/services/web-development" className="service-card"><div className="service-icon" aria-hidden="true">💻</div><h3 className="card-title">Website & Mobile Apps Development</h3><span className="learn-more-btn">Learn More</span></Link>
+                                    <Link to="/services/artist-management" className="service-card"><div className="service-icon" aria-hidden="true">🎤</div><h3 className="card-title">Artist Management</h3><span className="learn-more-btn">Learn More</span></Link>
+                                    <Link to="/services/event-management" className="service-card"><div className="service-icon" aria-hidden="true">🎭</div><h3 className="card-title">Event Management</h3><span className="learn-more-btn">Learn More</span></Link>
                                 </div>
                             </div>
                         </div>
@@ -450,7 +450,7 @@ const Home = () => {
                                     Our vision is to become a full-spectrum creative and growth partner for brands that want direction, clarity, and measurable momentum.
                                 </p>
                                 <div className="footer-cta-wrapper">
-                                    <Link to="/About_Us" className="main-cta">Start Your Project</Link>
+                                    <Link to="/about-us" className="main-cta">Start Your Project</Link>
                                 </div>
                             </div>
                         </div>

@@ -161,7 +161,7 @@ const Header = () => {
                                     onMouseEnter={handleBrandingEnter}
                                     onMouseLeave={handleBrandingLeave}
                                 >
-                                    <Link to="/services/Branding"
+                                    <Link to="/services/branding"
                                         onClick={closeServicesMenu}
 
                                         
@@ -186,20 +186,20 @@ const Header = () => {
                                         <span>▸</span>
                                     </Link>
                                     <div className="site-nav-submenu-panel">
-                                        <Link to="/services/logo" onClick={closeServicesMenu}>Logo</Link>
-                                        <Link to="/services/packaging" onClick={closeServicesMenu}>Packaging</Link>
-                                        <Link to="/services/brochure-menu" onClick={closeServicesMenu}>Brochure & Menu</Link>
+                                        <Link to="/services/branding/logo" onClick={closeServicesMenu}>Logo</Link>
+                                        <Link to="/services/branding/packaging" onClick={closeServicesMenu}>Packaging</Link>
+                                        <Link to="/services/branding/brochure-menu" onClick={closeServicesMenu}>Brochure & Menu</Link>
                                     </div>
                                 </div>
-                                <Link to="/services/social-media" onClick={closeServicesMenu}>Social Media</Link>
+                                <Link to="/services/social-media-marketing" onClick={closeServicesMenu}>Social Media</Link>
                                 <Link to="/services/performance-marketing" onClick={closeServicesMenu}>Performance Marketing</Link>
-                                <Link to="/services/commercial-and-ads" onClick={closeServicesMenu}>Commercial & Ads</Link>
-                                <Link to="/services/web-apps-development" onClick={closeServicesMenu}>Web & Apps Development</Link>
+                                <Link to="/services/commercial-ads" onClick={closeServicesMenu}>Commercial & Ads</Link>
+                                <Link to="/services/web-development" onClick={closeServicesMenu}>Web & Apps Development</Link>
                                 <Link to="/services/artist-management" onClick={closeServicesMenu}>Artist Management</Link>
                                 <Link to="/services/event-management" onClick={closeServicesMenu}>Event Management</Link>
                             </div>
                         </div>
-                        <Link to="/About_Us" onClick={closeServicesMenu}>About</Link>
+                        <Link to="/about-us" onClick={closeServicesMenu}>About</Link>
                         <Link to="/contact-us">Contact</Link>
                     </nav>
 
