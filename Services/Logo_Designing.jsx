@@ -1,11 +1,12 @@
 import React from 'react';
 import ServicePageTemplate from '../components/ServicePageTemplate';
-import brandGuidePdf from '../assets/brochures/brand-guide-holistic-copy.pdf';
-import brandingGuidePdf from '../assets/brochures/branding-guide.pdf';
-import aggarwalPdf from '../assets/brochures/aggarwal-2025.pdf';
 import brandGuidePreview from '../assets/brochures/previews/brand-guide-holistic-copy.jpg';
 import brandingGuidePreview from '../assets/brochures/previews/branding-guide.jpg';
 import aggarwalPreview from '../assets/brochures/previews/aggarwal-2025.jpg';
+
+const brandGuidePdf = '/brochures/brand-guide-holistic-copy.pdf';
+const brandingGuidePdf = '/brochures/branding-guide.pdf';
+const aggarwalPdf = '/brochures/aggarwal-2025.pdf';
 
 const logoIntro = [
     'A logo is not just a symbol. It is the visual shortcut people use to remember your brand, trust your offer, and recognize your presence instantly across every touchpoint.',
@@ -56,6 +57,8 @@ const Logo = () => {
                 { label: 'Branding Guide', url: brandingGuidePdf, previewUrl: brandingGuidePreview },
                 { label: 'Aggarwal 2025', url: aggarwalPdf, previewUrl: aggarwalPreview },
             ]}
+            pdfButtonLabel="Download Our Brochure"
+            pdfShowPreviewButton={false}
             ctaTitle="Ready to Build a Logo People Remember?"
             ctaDescription="Let's create a logo identity that feels sharp, premium, and ready to scale with your brand."
         />

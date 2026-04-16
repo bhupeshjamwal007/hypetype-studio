@@ -39,6 +39,7 @@ const CommercialAds = () => {
             benefits={adBenefits}
             servicesTitle="Our Commercial & Ads Services"
             services={adServices}
+            workVideos={['/videos/ad-1.mp4', '/videos/ad-2.mp4']}
             ctaTitle="Ready to Create Commercials That Convert?"
             ctaDescription="Let's produce ad content that grabs attention, strengthens your brand, and moves your audience to act."
         />
