@@ -160,14 +160,25 @@ const workPdfs = [
     { label: 'Trendsavvy-Case-Study', url: TrendsavvyCaseStudyPdf, previewUrl: TrendsavvyCaseStudyPreview },
 ];
 
+const getLoopedItems = (items, startIndex, count) => {
+    if (!items.length) return [];
+    return Array.from({ length: count }, (_, offset) => items[(startIndex + offset) % items.length]);
+};
+
 const SocialMedia = () => {
     const visibleDiscoverCards = 3;
+    const visibleCarouselCards = 4;
     const [discoverIndex, setDiscoverIndex] = useState(0);
+    const [workIndex, setWorkIndex] = useState(0);
     const maxDiscoverIndex = Math.max(0, discoverServices.length - visibleDiscoverCards);
 
     const activeDiscoverServices = useMemo(
         () => discoverServices.slice(discoverIndex, discoverIndex + visibleDiscoverCards),
         [discoverIndex]
+    );
+    const visibleWorkItems = useMemo(
+        () => getLoopedItems(workItems, workIndex, visibleCarouselCards),
+        [workIndex]
     );
 
     const handleDiscoverPrevious = () => {
@@ -176,6 +187,12 @@ const SocialMedia = () => {
 
     const handleDiscoverNext = () => {
         setDiscoverIndex((current) => (current >= maxDiscoverIndex ? 0 : current + 1));
+    };
+    const handleWorkPrevious = () => {
+        setWorkIndex((current) => (current - 1 + workItems.length) % workItems.length);
+    };
+    const handleWorkNext = () => {
+        setWorkIndex((current) => (current + 1) % workItems.length);
     };
 
     return (
@@ -245,27 +262,34 @@ const SocialMedia = () => {
                 <div className="branding-shell">
                     <h2 className="branding-section-title work-title">Our Work</h2>
                     <div className="logo-image-wrapper">
-                        <div className="work-image-grid">
-                            {workItems.map((item) => (
-                                <div key={item.src} className="logo-card social-work-card">
-                                    <img src={item.src} alt={`${item.title} social media work`} />
-                                    <a
-                                        href={item.instagramUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="social-work-link"
-                                        aria-label={`${item.title} on Instagram`}
+                        <div className="carousel-shell">
+                            <button type="button" className="carousel-arrow" aria-label="Previous work items" onClick={handleWorkPrevious}>&larr;</button>
+                            <div className="work-image-grid">
+                                {visibleWorkItems.map((item, index) => (
+                                    <div
+                                        key={`${item.src}-${workIndex}-${index}`}
+                                        className="logo-card social-work-card is-visible"
                                     >
-                                        <img
-                                            src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            className="social-work-instagram-icon"
-                                        />
-                                        <span>{item.title}</span>
-                                    </a>
-                                </div>
-                            ))}
+                                        <img src={item.src} alt={`${item.title} social media work`} />
+                                        <a
+                                            href={item.instagramUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="social-work-link"
+                                            aria-label={`${item.title} on Instagram`}
+                                        >
+                                            <img
+                                                src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
+                                                alt=""
+                                                aria-hidden="true"
+                                                className="social-work-instagram-icon"
+                                            />
+                                            <span>{item.title}</span>
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                            <button type="button" className="carousel-arrow" aria-label="Next work items" onClick={handleWorkNext}>&rarr;</button>
                         </div>
                     </div>
                 </div>
@@ -273,7 +297,7 @@ const SocialMedia = () => {
 
             <section className="branding-section branding-white-section brochures-section">
                 <div className="branding-shell">
-                    <h2 className="branding-section-title work-title">Brochures</h2>
+                    <h2 className="branding-section-title work-title">Case Study</h2>
                     <div className="pdf-grid">
                         {workPdfs.map((pdf) => (
                             <article key={pdf.url} className="pdf-card">

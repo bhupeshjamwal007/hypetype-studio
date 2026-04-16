@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
 import pdfWorkerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
@@ -72,6 +72,15 @@ const ServicePageTemplate = ({
         '--service-accent-end': accentEnd,
         '--service-accent-soft': accentSoft,
         '--service-accent-shadow': accentShadow,
+    };
+
+    const logoGridRef = useRef(null);
+
+    const scrollLogoGrid = (direction) => {
+        if (logoGridRef.current) {
+            const scrollAmount = logoGridRef.current.clientWidth;
+            logoGridRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+        }
     };
 
     const [selectedImg, setSelectedImg] = useState(null);
@@ -277,8 +286,10 @@ const ServicePageTemplate = ({
                         {workImages.length > 0 && (
                             <div className="logo-image-wrapper" style={{ marginTop: workVideos.length > 0 ? '80px' : '0' }}>
                                 <h2 className="branding-section-title work-title">Our Logo Work</h2>
-                                <div className="work-image-grid">
-                                    {workImages.map((imgSrc, index) => (
+                                <div className="carousel-shell">
+                                    <button type="button" className="carousel-arrow" onClick={() => scrollLogoGrid('left')} aria-label="Scroll left">&#8592;</button>
+                                    <div className="work-image-grid" ref={logoGridRef}>
+                                        {workImages.map((imgSrc, index) => (
                                         <div
                                             key={`logo-${index}`}
                                             className="logo-card"
@@ -295,6 +306,8 @@ const ServicePageTemplate = ({
                                             <img src={imgSrc} alt="Logo Design" />
                                         </div>
                                     ))}
+                                    </div>
+                                    <button type="button" className="carousel-arrow" onClick={() => scrollLogoGrid('right')} aria-label="Scroll right">&#8594;</button>
                                 </div>
                             </div>
                         )}

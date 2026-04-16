@@ -29,10 +29,7 @@ function isHomePath(pathname) {
 function AppShell() {
     const location = useLocation();
     const matchRoot = useMatch({ path: '/', end: true });
-    const matchHome = useMatch({ path: '/HypeType-page', end: true });
-    const matchLegacyHome = useMatch({ path: '/HypeType', end: true });
-    const hideGlobalFooter =
-        Boolean(matchRoot || matchHome || matchLegacyHome) || isHomePath(location.pathname);
+    const hideGlobalFooter = Boolean(matchRoot) || isHomePath(location.pathname);
     const showGlobalFooter = !hideGlobalFooter;
 
     return (
@@ -41,30 +38,21 @@ function AppShell() {
             <main className="app-main">
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/HypeType" element={<Navigate to="/" replace />} />
-                    <Route path="/HypeType-page" element={<Navigate to="/" replace />} />
+                    <Route path="/about-us/" element={<AboutUs />} />
+                    <Route path="/contact-us/" element={<ContactUs />} />
+
                     <Route path="/services" element={<Services />} />
-                    <Route path="/about-us" element={<AboutUs />} />
-                    <Route path="/About_Us" element={<AboutUs />} />
-                    <Route path="/contact-us" element={<ContactUs />} />
-                    <Route path="/Contact_Us" element={<ContactUs />} />
-                    <Route path="/services/branding" element={<Branding />} />
-                    <Route path="/Services/Branding" element={<Branding />} />
-                    <Route path="/services/logo" element={<Logo />} />
-                    <Route path="/services/packaging" element={<Packaging />} />
-                    <Route path="/services/brochure-menu" element={<BrochureMenu />} />
-                    <Route path="/services/social-media" element={<SocialMedia />} />
-                    <Route path="/Services/Social_Media" element={<SocialMedia />} />
-                    <Route path="/services/performance-marketing" element={<PerformanceMarketing />} />
-                    <Route path="/Services/Performance_Marketting" element={<PerformanceMarketing />} />
-                    <Route path="/services/commercial-and-ads" element={<CommercialAds />} />
-                    <Route path="/Services/Commercial&Ads" element={<CommercialAds />} />
-                    <Route path="/services/web-apps-development" element={<WebAppsDevelopment />} />
-                    <Route path="/Services/Web&AppsDevelopment" element={<WebAppsDevelopment />} />
-                    <Route path="/services/artist-management" element={<ArtistManagement />} />
-                    <Route path="/Services/Artist_Management" element={<ArtistManagement />} />
-                    <Route path="/services/event-management" element={<EventManagement />} />
-                    <Route path="/Services/Event_Management" element={<EventManagement />} />
+                    <Route path="/services/branding/" element={<Branding />} />
+                    <Route path="/services/branding/logo/" element={<Logo />} />
+                    <Route path="/services/branding/packaging/" element={<Packaging />} />
+                    <Route path="/services/branding/brochure-menu/" element={<BrochureMenu />} />
+
+                    <Route path="/services/social-media-marketing/" element={<SocialMedia />} />
+                    <Route path="/services/performance-marketing/" element={<PerformanceMarketing />} />
+                    <Route path="/services/commercial-ads/" element={<CommercialAds />} />
+                    <Route path="/services/web-development/" element={<WebAppsDevelopment />} />
+                    <Route path="/services/artist-management/" element={<ArtistManagement />} />
+                    <Route path="/services/event-management/" element={<EventManagement />} />
                 </Routes>
             </main>
             {showGlobalFooter ? <Footer /> : null}

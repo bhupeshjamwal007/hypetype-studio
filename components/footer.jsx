@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import logoImage from '../assets/image/logo2.png';
@@ -148,11 +148,12 @@ const Footer = ({ style: footerStyle, isHome = false }) => {
         <div className="footer-services-column">
             <h4 className="footer-column-title">{isHome ? 'Services' : 'Featured Work'}</h4>
             <div className="footer-service-links">
+                <p className="footer-links-title">Services</p>
                 <Link to="/services/branding">Branding</Link>
                 <Link to="/services/performance-marketing">Performance Marketing</Link>
-                <Link to="/services/social-media">Social Media</Link>
-                <Link to="/services/commercial-and-ads">Commercial And Ads</Link>
-                <Link to="/services/web-apps-development">Web And Apps</Link>
+                <Link to="/services/social-media-marketing">Social Media</Link>
+                <Link to="/services/commercial-ads">Commercial And Ads</Link>
+                <Link to="/services/web-development">Web And Apps</Link>
                 <Link to="/services/artist-management">Artist Management</Link>
                 <Link to="/services/event-management">Event Management</Link>
             </div>
