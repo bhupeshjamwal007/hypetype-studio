@@ -1,11 +1,8 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Footer from './components/footer';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-const LAST_STACK_INDEX = 4;
-const WHEEL_THRESHOLD = 6;
-const TOUCH_THRESHOLD = 10;
 
 /** Tunes peel timing, optional continuous hero-thumb animation, and lazy video for Safari / low-end mobile. */
 function computeHomePerf() {
@@ -65,28 +62,19 @@ const Home = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const perf = useMemo(() => computeHomePerf(), []);
-    const pageAnimationMs = perf.pageAnimationMs;
-    const transitionCooldownMs = perf.transitionCooldownMs;
 
     const [sliderThankYou, setSliderThankYou] = useState(false);
     const [loadVideoIframe, setLoadVideoIframe] = useState(() => {
         if (typeof window === 'undefined') return false;
         return /^#(video-page|services-page|about-page|footer-page)/.test(window.location.hash);
     });
-    const pageRefs = useRef([]);
-    const servicesScrollRef = useRef(null);
-    const footerScrollRef = useRef(null);
-    const [isNarrowStack, setIsNarrowStack] = useState(() => (
-        typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches
+    const [animationProgress, setAnimationProgress] = useState(() => (
+        typeof window !== 'undefined' && /^#(video-page|services-page|about-page|footer-page)/.test(window.location.hash) ? 1 : 0
     ));
-    const [footerScrollMaxPx, setFooterScrollMaxPx] = useState(null);
-    const progressRef = useRef(0);
-    const pageIndexRef = useRef(0);
-    const animatingRef = useRef(false);
+    const heroPageRef = useRef(null);
+    const videoSectionRef = useRef(null);
+    const animationProgressRef = useRef(animationProgress);
     const touchStartYRef = useRef(null);
-    const snapFrameRef = useRef(null);
-    const wheelDeltaAccumulatorRef = useRef(0);
-    const lastTransitionAtRef = useRef(0);
 
     useEffect(() => {
         const thumb = document.getElementById('thumb');
@@ -243,178 +231,56 @@ const Home = () => {
     }, [navigate, perf.skipThumbLoop]);
 
     useEffect(() => {
-        const applyPeelEffect = (progressValue) => {
-            pageRefs.current.forEach((page, index) => {
-                if (!page) return;
+        const hero = heroPageRef.current;
+        if (!hero) return undefined;
 
-                const localProgress = clamp(progressValue - index, 0, 1);
-                const isFuturePage = index > Math.floor(progressValue + 0.001);
-                const rotateX = localProgress * -88;
-                const fade = localProgress < 0.82
-                    ? 1
-                    : clamp(1 - ((localProgress - 0.82) / 0.18), 0, 1);
-                const visibility = (localProgress >= 0.995 || isFuturePage) ? 'hidden' : 'visible';
-                const pointerEvents = (localProgress >= 0.995 || isFuturePage) ? 'none' : 'auto';
+        const viewport = Math.max(window.innerHeight, 1);
+        const progress = animationProgress;
+        const heroOpacity = 1 - progress;
+        const heroLift = -viewport * progress;
 
-                page.style.setProperty('--peel-translate', '0px');
-                page.style.setProperty('--peel-rotate', `${rotateX}deg`);
-                page.style.setProperty('--peel-scale', '1');
-                page.style.setProperty('--peel-opacity', `${fade}`);
-                page.style.setProperty('--peel-visibility', visibility);
-                page.style.setProperty('--page-active', pointerEvents);
-            });
+        hero.style.setProperty('--hero-fade-opacity', `${heroOpacity}`);
+        hero.style.setProperty('--hero-fade-translate', `${heroLift}px`);
+        hero.style.setProperty('--peel-visibility', 'visible');
+        hero.style.setProperty('--page-active', progress >= 0.98 ? 'none' : 'auto');
+
+        const video = videoSectionRef.current;
+        if (video) {
+            const videoOpacity = progress;
+            const videoScale = 0.98 + (0.02 * progress);
+            const videoLift = (1 - progress) * 64;
+            video.style.setProperty('--video-fade-opacity', `${videoOpacity}`);
+            video.style.setProperty('--video-fade-scale', `${videoScale}`);
+            video.style.setProperty('--video-fade-translate', `${videoLift}px`);
+        }
+    }, [animationProgress]);
+
+    useEffect(() => {
+        animationProgressRef.current = animationProgress;
+    }, [animationProgress]);
+
+    useEffect(() => {
+        const updateAnimationProgress = (delta) => {
+            const current = animationProgressRef.current;
+            const next = clamp(current + delta, 0, 1);
+            if (Math.abs(next - current) < 0.0001) return;
+            animationProgressRef.current = next;
+            setAnimationProgress(next);
         };
 
-        const cancelAnimation = () => {
-            if (snapFrameRef.current) {
-                window.cancelAnimationFrame(snapFrameRef.current);
-                snapFrameRef.current = null;
-            }
+        const shouldConsumeForAnimation = (deltaY) => {
+            const atTop = window.scrollY <= 1;
+            if (!atTop) return false;
+            const progress = animationProgressRef.current;
+            if (deltaY > 0 && progress < 1) return true;
+            if (deltaY < 0 && progress > 0) return true;
+            return false;
         };
-
-        const animateToProgress = (target) => {
-            cancelAnimation();
-            animatingRef.current = true;
-            lastTransitionAtRef.current = Date.now();
-
-            const start = performance.now();
-            const initial = progressRef.current;
-            const delta = target - initial;
-
-            if (Math.abs(delta) < 0.001) {
-                progressRef.current = target;
-                applyPeelEffect(target);
-                animatingRef.current = false;
-                if (target >= 1) setLoadVideoIframe(true);
-                return;
-            }
-
-            if (pageAnimationMs <= 0) {
-                progressRef.current = target;
-                applyPeelEffect(target);
-                animatingRef.current = false;
-                if (target >= 1) setLoadVideoIframe(true);
-                return;
-            }
-
-            const step = (now) => {
-                const elapsed = now - start;
-                const t = clamp(elapsed / pageAnimationMs, 0, 1);
-                const eased = 1 - Math.pow(1 - t, 3);
-                const next = initial + delta * eased;
-
-                progressRef.current = next;
-                applyPeelEffect(next);
-
-                if (t < 1) {
-                    snapFrameRef.current = window.requestAnimationFrame(step);
-                    return;
-                }
-
-                progressRef.current = target;
-                applyPeelEffect(target);
-                snapFrameRef.current = null;
-                animatingRef.current = false;
-                if (target >= 1) setLoadVideoIframe(true);
-            };
-
-            snapFrameRef.current = window.requestAnimationFrame(step);
-        };
-
-        const goToNextStackPage = () => {
-            if (animatingRef.current) return;
-            if (pageIndexRef.current >= LAST_STACK_INDEX) {
-                return;
-            }
-
-            pageIndexRef.current += 1;
-            animateToProgress(pageIndexRef.current);
-        };
-
-        const goToPreviousStackPage = () => {
-            if (animatingRef.current) return;
-            if (window.scrollY > 0) return;
-            if (pageIndexRef.current <= 0) return;
-
-            pageIndexRef.current -= 1;
-            animateToProgress(pageIndexRef.current);
-        };
-
-        const shouldHandleStackScroll = () => {
-            const scrollY = window.scrollY;
-            return scrollY <= 1;
-        };
-
-        const shouldAllowServicesInnerScroll = (direction) => {
-            if (window.innerWidth > 1024) return false;
-            if (pageIndexRef.current !== 2) return false;
-
-            const scroller = servicesScrollRef.current;
-            if (!scroller) return false;
-
-            const maxScrollTop = scroller.scrollHeight - scroller.clientHeight;
-            if (maxScrollTop <= 0) return false;
-
-            if (direction > 0) {
-                return scroller.scrollTop < maxScrollTop - 1;
-            }
-
-            return scroller.scrollTop > 1;
-        };
-
-        const shouldAllowFooterInnerScroll = (direction) => {
-            if (window.innerWidth > 1024) return false;
-            if (pageIndexRef.current !== 4) return false;
-
-            const scroller = footerScrollRef.current;
-            if (!scroller) return false;
-
-            const maxScrollTop = scroller.scrollHeight - scroller.clientHeight;
-            if (maxScrollTop <= 0) return false;
-
-            if (direction > 0) {
-                return scroller.scrollTop < maxScrollTop - 1;
-            }
-
-            return scroller.scrollTop > 1;
-        };
-
-        const isTransitionCoolingDown = () => Date.now() - lastTransitionAtRef.current < transitionCooldownMs;
-        const isLegalModalOpen = () => (typeof window !== 'undefined'
-            ? window.document?.body?.classList.contains('legal-modal-open')
-            : false);
-        const isEventInsideLegalModal = (event) => {
-            const target = event.target;
-            return target instanceof Element && !!target.closest('.legal-modal');
-        };
-
-        const touchSlop = perf.lowEndMobile ? 14 : TOUCH_THRESHOLD;
 
         const onWheel = (event) => {
-            if (isLegalModalOpen()) {
-                if (!isEventInsideLegalModal(event)) {
-                    event.preventDefault();
-                }
-                return;
-            }
-            if (!shouldHandleStackScroll()) return;
-            if (shouldAllowServicesInnerScroll(Math.sign(event.deltaY || 0))) return;
-            if (shouldAllowFooterInnerScroll(Math.sign(event.deltaY || 0))) return;
-
+            if (!shouldConsumeForAnimation(event.deltaY)) return;
             event.preventDefault();
-            if (animatingRef.current || isTransitionCoolingDown()) return;
-
-            wheelDeltaAccumulatorRef.current += event.deltaY;
-            if (Math.abs(wheelDeltaAccumulatorRef.current) < WHEEL_THRESHOLD) return;
-
-            const direction = wheelDeltaAccumulatorRef.current > 0 ? 1 : -1;
-            wheelDeltaAccumulatorRef.current = 0;
-            if (direction > 0) {
-                goToNextStackPage();
-                return;
-            }
-
-            goToPreviousStackPage();
+            updateAnimationProgress(event.deltaY * 0.0016);
         };
 
         const onTouchStart = (event) => {
@@ -422,39 +288,23 @@ const Home = () => {
         };
 
         const onTouchMove = (event) => {
-            if (isLegalModalOpen()) {
-                if (!isEventInsideLegalModal(event)) {
-                    event.preventDefault();
-                }
-                return;
-            }
             const touchY = event.touches[0]?.clientY;
             const startY = touchStartYRef.current;
             if (touchY == null || startY == null) return;
-
             const deltaY = startY - touchY;
-            if (!shouldHandleStackScroll()) return;
-            if (shouldAllowServicesInnerScroll(Math.sign(deltaY || 0))) return;
-            if (shouldAllowFooterInnerScroll(Math.sign(deltaY || 0))) return;
-
-            event.preventDefault();
-            if (animatingRef.current || isTransitionCoolingDown()) return;
-            if (Math.abs(deltaY) < touchSlop) return;
-
-            touchStartYRef.current = touchY;
-            if (deltaY > 0) {
-                goToNextStackPage();
+            if (!shouldConsumeForAnimation(deltaY)) {
+                touchStartYRef.current = touchY;
                 return;
             }
-
-            goToPreviousStackPage();
+            event.preventDefault();
+            touchStartYRef.current = touchY;
+            updateAnimationProgress(deltaY * 0.0022);
         };
 
         const onTouchEnd = () => {
             touchStartYRef.current = null;
         };
 
-        applyPeelEffect(progressRef.current);
         window.addEventListener('wheel', onWheel, { passive: false });
         window.addEventListener('touchstart', onTouchStart, { passive: true });
         window.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -465,162 +315,58 @@ const Home = () => {
             window.removeEventListener('touchstart', onTouchStart);
             window.removeEventListener('touchmove', onTouchMove);
             window.removeEventListener('touchend', onTouchEnd);
-            cancelAnimation();
-            wheelDeltaAccumulatorRef.current = 0;
         };
-    }, [pageAnimationMs, transitionCooldownMs, perf.lowEndMobile]);
-
-    useEffect(() => {
-        const mq = window.matchMedia('(max-width: 768px)');
-        const sync = () => setIsNarrowStack(mq.matches);
-        sync();
-        mq.addEventListener('change', sync);
-        return () => mq.removeEventListener('change', sync);
     }, []);
 
-    const footerSectionRef = useRef(null);
+    useEffect(() => {
+        const videoSection = videoSectionRef.current;
+        if (!videoSection || loadVideoIframe) return undefined;
 
-    const measureFooterScrollRegion = () => {
-        const section = footerSectionRef.current;
-        if (!section) return;
-        setFooterScrollMaxPx(Math.round(section.clientHeight));
-    };
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    setLoadVideoIframe(true);
+                    observer.disconnect();
+                }
+            },
+            { root: null, threshold: 0.15 }
+        );
 
-    useLayoutEffect(() => {
-        if (!isNarrowStack) {
-            setFooterScrollMaxPx(null);
-            return undefined;
-        }
-
-        measureFooterScrollRegion();
-        const rafId = requestAnimationFrame(() => {
-            requestAnimationFrame(measureFooterScrollRegion);
-        });
-
-        const section = footerSectionRef.current;
-        const vv = window.visualViewport;
-
-        let vvRaf = null;
-        const onVvChange = () => {
-            if (vvRaf != null) return;
-            vvRaf = requestAnimationFrame(() => {
-                vvRaf = null;
-                measureFooterScrollRegion();
-            });
-        };
-
-        window.addEventListener('resize', onVvChange);
-        window.addEventListener('orientationchange', onVvChange);
-        if (vv) {
-            vv.addEventListener('resize', onVvChange);
-            vv.addEventListener('scroll', onVvChange);
-        }
-
-        let ro;
-        if (section && typeof ResizeObserver !== 'undefined') {
-            ro = new ResizeObserver(onVvChange);
-            ro.observe(section);
-        }
-
-        return () => {
-            if (vvRaf != null) cancelAnimationFrame(vvRaf);
-            cancelAnimationFrame(rafId);
-            window.removeEventListener('resize', onVvChange);
-            window.removeEventListener('orientationchange', onVvChange);
-            if (vv) {
-                vv.removeEventListener('resize', onVvChange);
-                vv.removeEventListener('scroll', onVvChange);
-            }
-            if (ro) ro.disconnect();
-        };
-    }, [isNarrowStack]);
+        observer.observe(videoSection);
+        return () => observer.disconnect();
+    }, [loadVideoIframe]);
 
     useEffect(() => {
-        const hashToIndex = {
-            '#home-page': 0,
-            '#video-page': 1,
-            '#services-page': 2,
-            '#about-page': 3,
-            '#footer-page': 4,
+        const hashToId = {
+            '#home-page': 'home-page',
+            '#video-page': 'video-page',
+            '#services-page': 'services-page',
+            '#about-page': 'about-page',
+            '#footer-page': 'footer-page',
         };
 
-        const targetIndex = hashToIndex[location.hash];
-        if (targetIndex == null) return;
+        const targetId = hashToId[location.hash];
+        if (!targetId) return;
 
-        if (targetIndex >= 1) setLoadVideoIframe(true);
+        if (targetId !== 'home-page') {
+            window.requestAnimationFrame(() => {
+                setLoadVideoIframe(true);
+                setAnimationProgress(1);
+            });
+            animationProgressRef.current = 1;
+        }
 
-        pageIndexRef.current = targetIndex;
-        progressRef.current = targetIndex;
-
-        pageRefs.current.forEach((page, index) => {
-            if (!page) return;
-
-            const localProgress = clamp(targetIndex - index, 0, 1);
-            const isFuturePage = index > targetIndex;
-            const rotateX = localProgress * -88;
-            const fade = localProgress < 0.82
-                ? 1
-                : clamp(1 - ((localProgress - 0.82) / 0.18), 0, 1);
-            const visibility = (localProgress >= 0.995 || isFuturePage) ? 'hidden' : 'visible';
-            const pointerEvents = (localProgress >= 0.995 || isFuturePage) ? 'none' : 'auto';
-
-            page.style.setProperty('--peel-translate', '0px');
-            page.style.setProperty('--peel-rotate', `${rotateX}deg`);
-            page.style.setProperty('--peel-scale', '1');
-            page.style.setProperty('--peel-opacity', `${fade}`);
-            page.style.setProperty('--peel-visibility', visibility);
-            page.style.setProperty('--page-active', pointerEvents);
-        });
-
-        window.scrollTo({ top: 0, behavior: 'auto' });
+        const target = document.getElementById(targetId);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }, [location.hash]);
 
-    const registerPage = (index) => (element) => {
-        pageRefs.current[index] = element;
-    };
-
-    const setFooterPageRef = (index) => (element) => {
-        pageRefs.current[index] = element;
-        if (index === 4) {
-            footerSectionRef.current = element;
-        }
-    };
-
-    const footerStackStyle = isNarrowStack
-        ? {
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            width: '100%',
-            ...(footerScrollMaxPx != null
-                ? {
-                    height: `${footerScrollMaxPx}px`,
-                    maxHeight: `${footerScrollMaxPx}px`,
-                }
-                : {
-                    bottom: 0,
-                }),
-            minHeight: 0,
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain',
-            justifyContent: 'flex-start',
-            boxSizing: 'border-box',
-            touchAction: 'pan-y',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'stretch',
-            paddingBottom: 'max(24px, env(safe-area-inset-bottom, 0px))',
-        }
-        : undefined;
-
     return (
-        <div className={`home-layout${perf.lite ? ' home-layout--lite' : ''}`}>
+        <div className={`home-layout home-layout--single-peel${perf.lite ? ' home-layout--lite' : ''}`}>
             <div className="peel-scroll-region">
                 <div className="peel-stage">
-                    <section className="peel-page hero-page" id="home-page" ref={registerPage(0)}>
+                    <section className="peel-page peel-page--single hero-page" id="home-page" ref={heroPageRef}>
                         <div className="content welcome-text">
                             <span className="eyebrow">HYPETYPE - Brand Growth Studio</span>
                             <h1 className="brand-title">Visibility without direction is noise.</h1>
@@ -650,7 +396,7 @@ const Home = () => {
                         </div>
                     </section>
 
-                    <section className="peel-page video-page" id="video-page" ref={registerPage(1)}>
+                    <section className="peel-page home-flow-page video-page" id="video-page" ref={videoSectionRef}>
                         <div className="content video-fullscreen-layout">
                             <div className="video-container video-fullscreen-frame">
                                 {loadVideoIframe ? (
@@ -672,8 +418,8 @@ const Home = () => {
                         </div>
                     </section>
 
-                    <section className="peel-page services-page" id="services-page" ref={registerPage(2)}>
-                        <div className="content services-content" ref={servicesScrollRef}>
+                    <section className="peel-page home-flow-page services-page" id="services-page">
+                        <div className="content services-content">
                             <span className="eyebrow">What We Do</span>
                             <h2 className="brand-title">Full-Stack <span>Growth</span></h2>
                             <p className="sub-description">
@@ -695,7 +441,7 @@ const Home = () => {
                         </div>
                     </section>
 
-                    <section className="peel-page about-stack-page" id="about-page" ref={registerPage(3)}>
+                    <section className="peel-page home-flow-page about-stack-page" id="about-page">
                         <div className="content about-content about-stack-content">
                             <div className="about-main">
                                 <span className="about-badge">About HYPETYPE</span>
@@ -710,13 +456,9 @@ const Home = () => {
                         </div>
                     </section>
 
-                    <section className="peel-page about-stack-page" id="footer-page" ref={setFooterPageRef(4)}>
-                        <div
-                            className="content about-content about-stack-content services-content"
-                            ref={footerScrollRef}
-                            style={footerStackStyle}
-                        >
-                            <Footer isHome style={{ marginTop: isNarrowStack ? 30 : 0, overflow: 'visible' }} />
+                    <section className="peel-page home-flow-page about-stack-page" id="footer-page">
+                        <div className="content about-content about-stack-content services-content">
+                            <Footer isHome style={{ marginTop: 0, overflow: 'visible' }} />
                         </div>
                     </section>
                 </div>
