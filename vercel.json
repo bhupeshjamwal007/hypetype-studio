@@ -1,15 +1,8 @@
 {
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/HypeType-page",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/"
+      "destination": "/index.html"
     }
   ]
 }
