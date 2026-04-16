@@ -78,8 +78,22 @@ const ServicePageTemplate = ({
 
     const scrollLogoGrid = (direction) => {
         if (logoGridRef.current) {
-            const scrollAmount = logoGridRef.current.clientWidth;
-            logoGridRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+            const { scrollLeft, scrollWidth, clientWidth } = logoGridRef.current;
+            const scrollAmount = clientWidth;
+
+            if (direction === 'left') {
+                if (scrollLeft <= 5) {
+                    logoGridRef.current.scrollTo({ left: scrollWidth, behavior: 'smooth' });
+                } else {
+                    logoGridRef.current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                }
+            } else {
+                if (Math.ceil(scrollLeft + clientWidth) >= scrollWidth - 10) {
+                    logoGridRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    logoGridRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }
         }
     };
 
@@ -336,7 +350,7 @@ const ServicePageTemplate = ({
             {workPdfs.length > 0 && (
                 <section className="branding-section branding-muted-section work-section-container brochure-section">
                     <div className="branding-shell">
-                        <h2 className="branding-section-title work-title">Brochures</h2>
+                        <h2 className="branding-section-title work-title">Brand Guide</h2>
                         <div className="pdf-grid">
                             {workPdfs.map((pdf) => (
                                 <PdfPreviewCard key={pdf.url} pdf={pdf} onOpen={openPdfViewer} onDownload={downloadBrochure} buttonLabel={pdfButtonLabel} showPreviewButton={pdfShowPreviewButton} />

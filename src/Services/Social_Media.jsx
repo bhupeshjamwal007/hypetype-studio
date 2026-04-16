@@ -295,7 +295,7 @@ const SocialMedia = () => {
                 </div>
             </section>
 
-            <section className="branding-section branding-white-section brochures-section">
+            <section className="branding-section branding-muted-section brochures-section">
                 <div className="branding-shell">
                     <h2 className="branding-section-title work-title">Case Study</h2>
                     <div className="pdf-grid">
